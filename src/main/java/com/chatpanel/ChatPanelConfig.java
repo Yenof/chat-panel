@@ -2783,6 +2783,31 @@ public interface ChatPanelConfig extends Config {
     // Start of type based coloring entries.
 
 
+
+    @ConfigItem(
+            keyName = "overrideNameColor",
+            name = "Override Name Color",
+            description = "Use message type color for the name/identifier.",
+            section = eventSection,
+            position = 0
+    )
+    default boolean OverrideNameColor()
+    {
+        return false;
+    }
+
+    @ConfigItem(
+            keyName = "overrideTimestampColor",
+            name = "Override Timestamp Color",
+            description = "Use message type color for the timestamp.",
+            section = eventSection,
+            position = 0
+    )
+    default boolean OverrideTimestampColor()
+    {
+        return false;
+    }
+
     @ConfigItem(
             keyName = "broadcastColor",
             name = "Broadcast",

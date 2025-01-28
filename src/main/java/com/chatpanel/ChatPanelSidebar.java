@@ -1295,14 +1295,34 @@ public class ChatPanelSidebar extends PluginPanel {
             int effectiveLineCount = (lineCount + extraLines - 1) / (extraLines + 1);
             boolean isOddLine = (effectiveLineCount - 1) % 2!= 0;
 
+
             SimpleAttributeSet timestampAttrs = new SimpleAttributeSet();
             Color timestampColor;
-            timestampColor = isOddLine ? adjustColor(TimestampColor(chatArea), config.chatColorOffset()) : TimestampColor(chatArea);
+            if (config.OverrideTimestampColor()) {
+                if (baseColor.equals(chatArea.getForeground())) {
+                    timestampColor = isOddLine ? adjustColor(TimestampColor(chatArea), config.chatColorOffset()) : TimestampColor(chatArea);
+                } else {
+                    timestampColor = isOddLine ? adjustColor(baseColor, config.chatColorOffset()) : baseColor;
+                }
+            } else {
+                timestampColor = isOddLine ? adjustColor(TimestampColor(chatArea), config.chatColorOffset()) : TimestampColor(chatArea);
+            }
             StyleConstants.setForeground(timestampAttrs, timestampColor);
 
+
             SimpleAttributeSet nameAttrs = new SimpleAttributeSet();
-            Color nameColor = isOddLine? adjustColor(NameColor(chatArea, cleanedName), config.chatColorOffset()) : NameColor(chatArea, cleanedName);
+            Color nameColor;
+            if (config.OverrideNameColor()) {
+                if (baseColor.equals(chatArea.getForeground())) {
+                    nameColor = isOddLine ? adjustColor(NameColor(chatArea, cleanedName), config.chatColorOffset()) : NameColor(chatArea, cleanedName);
+                } else {
+                    nameColor = isOddLine ? adjustColor(baseColor, config.chatColorOffset()) : baseColor;
+                }
+            } else {
+                nameColor = isOddLine ? adjustColor(NameColor(chatArea, cleanedName), config.chatColorOffset()) : NameColor(chatArea, cleanedName);
+            }
             StyleConstants.setForeground(nameAttrs, nameColor);
+
 
             SimpleAttributeSet messageAttrs = new SimpleAttributeSet();
             Color messageColor = isOddLine? adjustColor(baseColor, config.chatColorOffset()) : baseColor;
