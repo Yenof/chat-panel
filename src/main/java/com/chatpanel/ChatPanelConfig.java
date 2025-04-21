@@ -401,6 +401,31 @@ public interface ChatPanelConfig extends Config {
     }
 
     @ConfigItem(
+            keyName = "splitPMs",
+            name = "Split PMs",
+            description = "Spawns a new chat tab for each private chat conversation. (PM Tabs)",
+            section = privateChatSection,
+            position = 7
+    )
+    default boolean splitPMs()
+    {
+        return true;
+    }
+
+    @Range (min = 1, max = 100) // Anyone with more than 100 conversations is up to no good.
+    @ConfigItem(
+            keyName = "maxPMTabs",
+            name = "Max PM Tabs",
+            description = "Maximum number of PM tabs to spawn before sending new conversations to the private tab.",
+            section = privateChatSection,
+            position = 8
+    )
+    default int maxPMTabs()
+    {
+        return 50;
+    }
+
+    @ConfigItem(
             keyName = "clanChatColor",
             name = "Clan Chat Color",
             description = "Configures the font color of the clan chat messages.",

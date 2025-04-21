@@ -121,6 +121,7 @@ public class ChatPanelPlugin extends Plugin
         String cleanedMessage = event.getType() == ChatMessageType.DIALOG ? cleanDialogMessage(event.getMessage()) : cleanString(event.getMessage());
         String timestamp = getCurrentTimestamp();
         String eventName = event.getType().name();
+        String privateName = event.getName().replace("[", "").replace("]", "").trim();
 
         switch (event.getType()) {
             case PUBLICCHAT:
@@ -130,7 +131,10 @@ public class ChatPanelPlugin extends Plugin
                 break;
             case PRIVATECHAT:
             case MODPRIVATECHAT:
-                if (config.showPrivateChat()) {
+            case PRIVATECHATOUT:
+                if (config.showPrivateChat() || config.splitPMs()) {
+                    if (!chatPanelSidebar.privateChatNames.contains(privateName)) {
+                        chatPanelSidebar.privateChatNames.add(privateName); }
                     chatPanelSidebar.addPrivateChatMessage(timestamp, cleanedName, cleanedMessage, eventName);}
                 break;
             case CLAN_CHAT:
@@ -142,10 +146,6 @@ public class ChatPanelPlugin extends Plugin
             case CHALREQ_CLANCHAT:
                 if (config.showClanChat()) {
                     chatPanelSidebar.addClanChatMessage(timestamp, cleanedName, cleanedMessage, eventName);}
-                break;
-            case PRIVATECHATOUT:
-                if (config.showPrivateChat()) {
-                    chatPanelSidebar.addPrivateChatMessage(timestamp, cleanedName, cleanedMessage, eventName);}
                 break;
             case FRIENDSCHAT:
             case CHALREQ_FRIENDSCHAT:
@@ -739,6 +739,14 @@ public class ChatPanelPlugin extends Plugin
     public void onConfigChanged(ConfigChanged event) {
         if ("chatpanel".equals(event.getGroup())) {
             if (event.getKey().startsWith("show")) {
+                chatPanelSidebar.reloadPlugin();
+            }
+            if (event.getKey().equals("splitPMs")) {
+                if (config.splitPMs()) {
+                    chatPanelSidebar.splitIntoPMTabs();
+                } else {
+                    chatPanelSidebar.mergePMTabs();
+                }
                 chatPanelSidebar.reloadPlugin();
             }
             if (event.getKey().startsWith("font") || event.getKey().endsWith("FontSize")) {

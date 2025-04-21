@@ -25,6 +25,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Objects;
+import java.util.Map;
+import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -141,6 +143,16 @@ public class ChatPanelSidebar extends PluginPanel {
             searchWindow.setVisible(true);
         });
 
+        String tabTitle = tabbedPane.getTitleAt(tabIndex);
+        if (privateChatTabs.containsKey(tabTitle)|| ("Private".equals(tabTitle) && !config.showPrivateChat())) {
+            JMenuItem closeTabItem = new JMenuItem("Close Tab");
+            closeTabItem.addActionListener(e -> {
+                tabbedPane.remove(tabIndex);
+                privateChatTabs.remove(tabTitle);
+                privateChatNames.remove(tabTitle);
+            });
+            popupMenu.add(closeTabItem);
+        }
         popupMenu.show(component, x, y);
     }
 
@@ -152,7 +164,7 @@ public class ChatPanelSidebar extends PluginPanel {
             tabbedPane.setToolTipTextAt(tabbedPane.indexOfTab("Public"), "Right click for options. MMB to pop out tab");
         }
 
-        if (config.showPrivateChat()) {
+        if (config.showPrivateChat() || maxPMmessageshown || mergedPMs) {
             tabbedPane.addTab("Private", createScrollPane(privateChatArea));
             tabbedPane.setToolTipTextAt(tabbedPane.indexOfTab("Private"), "Right click for options. MMB to pop out tab");
         }
@@ -200,6 +212,138 @@ public class ChatPanelSidebar extends PluginPanel {
             tabbedPane.addTab(tabTitle, createScrollPane(combatArea));
             tabbedPane.setToolTipTextAt(tabbedPane.indexOfTab(tabTitle), "Right click for options. MMB to pop out tab");
         }
+
+        for (Map.Entry<String, JTextPane> entry : privateChatTabs.entrySet()) {
+            String tabName = entry.getKey();
+            JTextPane chatArea = entry.getValue();
+            tabbedPane.addTab(tabName, createScrollPane(chatArea));
+            tabbedPane.setToolTipTextAt(tabbedPane.indexOfTab(tabName), "Right click for options or to remove tab. MMB to pop out tab");
+        }
+    }
+
+
+    public final List<String> privateChatNames = new ArrayList<>(); // List to store private chat names for dropdown menu in Chat Out (future).
+    private final Map<String, JTextPane> privateChatTabs = new HashMap<>();
+    boolean maxPMmessageshown = false;
+
+    private JTextPane createPrivateChatTabs(String name) {
+        String tabName;
+        if (name.startsWith("To ")) {
+            tabName = name.substring(3);
+        } else if (name.startsWith("From ")) {
+            tabName = name.substring(5);
+        } else {
+            tabName = name;
+        }
+
+        JTextPane pmTab = privateChatTabs.get(tabName);
+
+        if (pmTab == null) {
+            if (privateChatTabs.size() >= config.maxPMTabs()) {
+                if (!maxPMmessageshown){
+                    JOptionPane.showMessageDialog(this, "Maximum number of PM tabs reached, new PMs will be sent to Private tab. \nYou can right-click > 'Remove tab' on a PM tab to create room for more PM tabs.", "Too many friends", JOptionPane.WARNING_MESSAGE);
+                    maxPMmessageshown = true;
+                }
+                if (tabbedPane.indexOfTab("Private") == -1 && popoutTabs.stream().noneMatch(f -> "Private".equals(f.getTitle()))) {
+                    tabbedPane.addTab("Private", createScrollPane(privateChatArea));
+                    tabbedPane.setToolTipTextAt(tabbedPane.indexOfTab("Private"), "Right click for options. MMB to pop out tab");
+                }
+               return privateChatArea;
+            }
+            pmTab = createTextPane();
+            privateChatTabs.put(tabName, pmTab);
+            tabbedPane.addTab(tabName, createScrollPane(pmTab));
+            tabbedPane.setToolTipTextAt(tabbedPane.indexOfTab(tabName), "Right click for options or to remove tab. MMB to pop out tab");
+            updateChatStyles();
+            updateFonts();
+            maxPMmessageshown = false;
+        }
+
+        return pmTab;
+    }
+
+    private String[] reMessage(String line) { // This is literally just so people don't lose PMs when toggling the Split PMs setting..... Seems crazy... And it keeps pretty formatting too... XD
+        String extractedTimestamp;
+        String nameWithPrefix;
+        String message;
+        String eventType = "PRIVATECHAT";
+
+        int toIndex = line.indexOf("[To");
+        int fromIndex = line.indexOf("[From");
+        int prefixIndex = (toIndex != -1) ? toIndex : fromIndex;
+
+        if (toIndex != -1 && fromIndex != -1) { // This is in case the message actually contains '[To' or '[From'.
+            prefixIndex = Math.min(toIndex, fromIndex);
+        }
+
+        if (prefixIndex == -1) {
+            return null;
+        } else {
+            if  (prefixIndex == toIndex) {
+                eventType = "PRIVATECHATOUT";
+            }
+        }
+
+        extractedTimestamp = line.substring(0, prefixIndex).trim();
+        if (extractedTimestamp.startsWith("[") && extractedTimestamp.endsWith("]")) {
+            extractedTimestamp = extractedTimestamp.substring(1, extractedTimestamp.length() - 1);
+        }
+
+        int nameEndIndex = line.indexOf("]:", prefixIndex);
+        if (nameEndIndex == -1) {
+            return null;
+        }
+
+        nameWithPrefix = line.substring(prefixIndex + 1, nameEndIndex).trim();
+        message = line.substring(nameEndIndex + 2).trim();
+        return new String[]{extractedTimestamp, nameWithPrefix, message, eventType};
+    }
+
+    void splitIntoPMTabs() {
+        try {
+            String text = privateChatArea.getStyledDocument().getText(0, privateChatArea.getStyledDocument().getLength());
+            for (String line : text.split("\n")) {
+                String[] chatLineData = reMessage(line);
+                if (chatLineData != null) {
+                    String timestamp = chatLineData[0];
+                    String name = chatLineData[1];
+                    String message = chatLineData[2];
+                    String eventType = chatLineData[3];
+                    JTextPane chatArea = createPrivateChatTabs(name);
+                    addMessageToChatArea(chatArea, timestamp, name, message, eventType);
+                    updateChatStyles();
+                    updateFonts();
+                    mergedPMs = false;
+                }
+            }
+        } catch (BadLocationException ignored) {}
+        privateChatArea.setText("");
+    }
+
+    boolean mergedPMs = false;
+    void mergePMTabs() {
+       for (Map.Entry<String, JTextPane> entry : privateChatTabs.entrySet()) {
+           JTextPane chatArea = entry.getValue();
+           try {
+               String text = chatArea.getStyledDocument().getText(0, chatArea.getStyledDocument().getLength());
+               for (String line : text.split("\n")) {
+                   String[] chatLineData = reMessage(line);
+                   if (chatLineData != null) {
+                       String timestamp = chatLineData[0];
+                       String name = chatLineData[1];
+                       String message = chatLineData[2];
+                       String eventType = chatLineData[3];
+                       if (!privateChatArea.getText().contains(line)) {
+                           addMessageToChatArea(privateChatArea, timestamp, name, message, eventType);
+                       }
+                       updateChatStyles();
+                       updateFonts();
+                       mergedPMs = true;
+                   }
+               }
+           } catch (Exception ignored) {}
+       }
+       privateChatTabs.clear();
     }
 
     public void reloadPlugin() {
@@ -646,6 +790,10 @@ public class ChatPanelSidebar extends PluginPanel {
         customChatArea2.setFont(getFontFromConfig(config.custom2ChatFontSize()));
         customChatArea3.setFont(getFontFromConfig(config.custom3ChatFontSize()));
         combatArea.setFont(getFontFromConfig(config.combatFontSize()));
+        for (Map.Entry<String, JTextPane> entry : privateChatTabs.entrySet()) {
+            JTextPane chatArea = entry.getValue();
+            chatArea.setFont(getFontFromConfig(config.privateChatFontSize()));
+        }
     }
 
     public static final File CHAT_PANEL_DIR = new File(RuneLite.RUNELITE_DIR.getPath() + File.separator + "chat-panel");
@@ -931,6 +1079,12 @@ public class ChatPanelSidebar extends PluginPanel {
         customChatArea3.setForeground(adjustColor(config.custom3ChatColor(), offset));
         combatArea.setBackground(config.combatBackgroundColor());
         combatArea.setForeground(adjustColor(config.combatTextColor(), offset));
+        for (Map.Entry<String, JTextPane> entry : privateChatTabs.entrySet()) {
+            JTextPane chatArea = entry.getValue();
+            chatArea.setBackground(config.privateChatBackground());
+            chatArea.setForeground(adjustColor(config.privateChatColor(), offset));
+
+        }
     }
 
     private static final String[] Identifiers = {"Public - ", "Clan - ", "Friends Chat - ", "ClanGuest - ", "ClanGIM - ", "ModChat - ", "ModPrivate - "};
@@ -971,6 +1125,11 @@ public class ChatPanelSidebar extends PluginPanel {
         } else if (chatArea == combatArea) {
             return config.combatLabelColor();
         }
+        for (JTextPane privateChatArea : privateChatTabs.values()) {
+            if (chatArea == privateChatArea) {
+                return config.privateChatNameColor();
+            }
+        }
         return (Color.YELLOW);
     }
 
@@ -995,6 +1154,11 @@ public class ChatPanelSidebar extends PluginPanel {
             return config.custom3ChatTimestampColor();
         } else if (chatArea == combatArea) {
             return config.combatTimestampColor();
+        }
+        for (JTextPane privateChatArea : privateChatTabs.values()) {
+            if (chatArea == privateChatArea) {
+                return config.privateChatTimestampColor();
+            }
         }
         return Color.YELLOW;
     }
@@ -1065,7 +1229,13 @@ public class ChatPanelSidebar extends PluginPanel {
     }
 
     public void addPrivateChatMessage(String timestamp, String name, String message, String eventName) {
-        addMessageToChatArea(privateChatArea, timestamp, name, message, eventName);
+        if (config.splitPMs()){
+            JTextPane chatArea = createPrivateChatTabs(name);
+            addMessageToChatArea(chatArea, timestamp, name, message, eventName);
+        }
+        if (config.showPrivateChat() && !maxPMmessageshown || mergedPMs) {
+            addMessageToChatArea(privateChatArea, timestamp, name, message, eventName);
+        }
     }
 
     public void addClanChatMessage(String timestamp, String name, String message, String eventName) {
@@ -1139,7 +1309,7 @@ public class ChatPanelSidebar extends PluginPanel {
             StyleConstants.setForeground(messageAttrs, messageColor);
 
             try {
-				if (!config.TimestampFormat().isEmpty()) {
+				if (!timestamp.isEmpty()) {
 					doc.insertString(doc.getLength(), "[" + timestamp + "] ", timestampAttrs);
 				}
 				if (!cleanedName.isEmpty()) {
