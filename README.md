@@ -68,6 +68,8 @@ The pop out window can be set to "Always on Top", keeping it on top of other win
 
 Can choose between many tabs to display: Public, Private, Clan, Friends Chat, Game, All, Combat, and Custom (1, 2, 3).
 
+By enabling "Split PMs" in the "Private Chat" settings, you can spawn individual tabs for each private chat conversation. 
+
 For the Combat Tab, there are options to only show combat events related to you, hide zero damage events, and show deaths in chat.
 
 The Message Type Coloring section allows you to select a color for a chat type. (Public Chat green, Examine text red). <br>
