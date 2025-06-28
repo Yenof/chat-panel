@@ -5,7 +5,6 @@ import net.runelite.api.*;
 import net.runelite.api.events.ActorDeath;
 import net.runelite.api.events.ChatMessage;
 import net.runelite.api.events.HitsplatApplied;
-import net.runelite.client.callback.ClientThread;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.plugins.Plugin;
@@ -44,13 +43,11 @@ public class ChatPanelPlugin extends Plugin
     {
         return configManager.getConfig(ChatPanelConfig.class);
     }
-    @Inject
-    private ClientThread clientThread;
 
     @Override
     protected void startUp() throws Exception
     {
-        chatPanelSidebar = new ChatPanelSidebar(config, client, clientThread);
+        chatPanelSidebar = new ChatPanelSidebar(config, client);
         if (!config.hideSidebarIcon()) {
             final BufferedImage icon = ImageUtil.loadImageResource(getClass(), "/ChatPanelimg.png");
 
@@ -124,6 +121,7 @@ public class ChatPanelPlugin extends Plugin
         String cleanedMessage = event.getType() == ChatMessageType.DIALOG ? cleanDialogMessage(event.getMessage()) : cleanString(event.getMessage());
         String timestamp = getCurrentTimestamp();
         String eventName = event.getType().name();
+        String privateName = event.getName().replace("[", "").replace("]", "").trim();
 
         switch (event.getType()) {
             case PUBLICCHAT:
@@ -135,7 +133,8 @@ public class ChatPanelPlugin extends Plugin
             case MODPRIVATECHAT:
             case PRIVATECHATOUT:
                 if (config.showPrivateChat() || config.splitPMs()) {
-                    chatPanelSidebar.addPrivateDD(event);
+                    if (!chatPanelSidebar.privateChatNames.contains(privateName)) {
+                        chatPanelSidebar.privateChatNames.add(privateName); }
                     chatPanelSidebar.addPrivateChatMessage(timestamp, cleanedName, cleanedMessage, eventName);}
                 break;
             case CLAN_CHAT:
@@ -212,15 +211,12 @@ public class ChatPanelPlugin extends Plugin
                 break;
             case PRIVATECHAT:
                 if (config.showCustomChat() && config.CustomPrivateChatEnabled()) {
-                    chatPanelSidebar.addPrivateDD(event);
                     chatPanelSidebar.addCustomChatMessage(timestamp, config.identifier1() ? identifier : cleanedName, cleanedMessage, eventName);
                 }
                 if (config.showCustom2Chat() && config.Custom2PrivateChatEnabled()) {
-                    chatPanelSidebar.addPrivateDD(event);
                     chatPanelSidebar.addCustom2ChatMessage(timestamp, config.identifier2() ? identifier : cleanedName, cleanedMessage, eventName);
                 }
                 if (config.showCustom3Chat() && config.Custom3PrivateChatEnabled()) {
-                    chatPanelSidebar.addPrivateDD(event);
                     chatPanelSidebar.addCustom3ChatMessage(timestamp, config.identifier3() ? identifier : cleanedName, cleanedMessage, eventName);
                 }
                 break;
@@ -314,15 +310,12 @@ public class ChatPanelPlugin extends Plugin
                 break;
             case PRIVATECHATOUT:
                 if (config.showCustomChat() && config.CustomPrivateChatoutEnabled()) {
-                    chatPanelSidebar.addPrivateDD(event);
                     chatPanelSidebar.addCustomChatMessage(timestamp, config.identifier1() ? identifier : cleanedName, cleanedMessage, eventName);
                 }
                 if (config.showCustom2Chat() && config.Custom2PrivateChatoutEnabled()) {
-                    chatPanelSidebar.addPrivateDD(event);
                     chatPanelSidebar.addCustom2ChatMessage(timestamp, config.identifier2() ? identifier : cleanedName, cleanedMessage, eventName);
                 }
                 if (config.showCustom3Chat() && config.Custom3PrivateChatoutEnabled()) {
-                    chatPanelSidebar.addPrivateDD(event);
                     chatPanelSidebar.addCustom3ChatMessage(timestamp, config.identifier3() ? identifier : cleanedName, cleanedMessage, eventName);
                 }
                 break;
@@ -755,9 +748,6 @@ public class ChatPanelPlugin extends Plugin
                     chatPanelSidebar.mergePMTabs();
                 }
                 chatPanelSidebar.reloadPlugin();
-            }
-            if (event.getKey().equals("chatEnabled")){
-                chatPanelSidebar.refreshPopout();
             }
             if (event.getKey().startsWith("font") || event.getKey().endsWith("FontSize")) {
                 chatPanelSidebar.updateFonts();

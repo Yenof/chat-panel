@@ -1120,55 +1120,6 @@ public interface ChatPanelConfig extends Config {
     }
 
     @ConfigItem(
-            keyName = "chatEnabled",
-            name = "Chat Out",
-            description = "Enables the sending of messages within the popout window.",
-            section = popoutSection,
-            position = 8
-    )
-    default boolean chatEnabled()
-    {
-        return true;
-    }
-
-    @Range(min = 5, max = 500)
-    @ConfigItem(
-            keyName = "inputFontSize",
-            name = "Chat Out Font Size",
-            description = "Sets the size of the text in the input text box.",
-            section = popoutSection,
-            position = 8
-    )
-    default int inputFontSize()
-    {
-        return 18;
-    }
-
-    @ConfigItem(
-            keyName = "inputFontColor",
-            name = "Chat Out Font Color",
-            description = "Sets the color of the text in the input text box.",
-            section = popoutSection,
-            position = 9
-    )
-    default Color inputFontColor()
-    {
-        return new Color(0xFFFFFF);
-    }
-
-    @ConfigItem(
-            keyName = "chatOutButtonFonts",
-            name = "Channel Selector Font",
-            description = "Allows the Send Button and the Channel Selector Dropdown text to be affected by Input Font Size (-20%) and Font choice. (Requires plugin restart or pop in and out)",
-            section = extrasSection,
-            position = 7
-    )
-    default boolean chatOutButtonFonts()
-    {
-        return false;
-    }
-
-    @ConfigItem(
             keyName = "DisablePopOut",
             name = "Hide Pop Out/Pop In Buttons",
             description = "Hides pop out button and pop in button, except in empty side panel. (Requires plugin restart)",

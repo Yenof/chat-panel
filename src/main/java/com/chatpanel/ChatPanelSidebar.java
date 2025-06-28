@@ -1,11 +1,6 @@
 package com.chatpanel;
 
 import net.runelite.api.Client;
-import net.runelite.api.GameState;
-import net.runelite.api.ScriptID;
-import net.runelite.api.clan.ClanChannel;
-import net.runelite.api.events.ChatMessage;
-import net.runelite.api.FriendsChatManager;
 import net.runelite.client.RuneLite;
 import net.runelite.client.ui.PluginPanel;
 import javax.swing.*;
@@ -14,7 +9,7 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.*;
-import net.runelite.client.callback.ClientThread;
+
 import net.runelite.client.util.ImageUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,16 +57,10 @@ public class ChatPanelSidebar extends PluginPanel {
     private Timer autoPopTimer;
     private final List<JFrame> popoutTabs = new ArrayList<>();
     private final Client client;
-    private final ClientThread clientThread;
-    private final JTextField messageInputField;
-    private final JButton sendButton;
-    public String targetRecipient = "Public";
-    public JComboBox<String> chatChannelDropdown;
 
-    public ChatPanelSidebar(ChatPanelConfig config, Client client, ClientThread clientThread) {
+    public ChatPanelSidebar(ChatPanelConfig config, Client client) {
         this.config = config;
         this.client = client;
-        this.clientThread = clientThread;
         setLayout(new BorderLayout());
         if (!config.hidepopoutButtons()) {
             popoutButton = new JButton("Pop out");
@@ -97,10 +86,6 @@ public class ChatPanelSidebar extends PluginPanel {
 
         tabbedPane = new JTabbedPane();
         createTabs();
-
-        messageInputField = new JTextField();
-        messageInputField.setPreferredSize(new Dimension(200, messageInputField.getFontMetrics(getFontFromConfig(config.inputFontSize())).getHeight() + 10));
-        sendButton = new JButton("Send");
 
         add(tabbedPane, BorderLayout.CENTER);
         updateChatStyles();
@@ -361,30 +346,6 @@ public class ChatPanelSidebar extends PluginPanel {
        privateChatTabs.clear();
     }
 
-    public void refreshPopout (){ // This doesn't move the popinButton back to south when toggling off, solve later if Chat Out is accepted.
-        if (!config.chatEnabled()){ // Don't forget to apply something like this to hidepopoutButtons in the future too.
-            popoutFrame.revalidate();
-            messageInputField.setVisible(false);
-            sendButton.setVisible(false);
-            chatChannelDropdown.setVisible(false);
-        } else {
-            if(!config.hidepopoutButtons()){
-                popoutFrame.add(popinButton, BorderLayout.EAST);
-            }
-            if (!boxSpawned){
-                addInputBox();
-                if (config.chatOutButtonFonts()){
-                    sendButton.setFont(getFontFromConfig(config.inputFontSize() > 10 ? (int)(config.inputFontSize() * 0.8) : config.inputFontSize()));
-                    chatChannelDropdown.setFont(getFontFromConfig(config.inputFontSize() > 10 ? (int)(config.inputFontSize() * 0.8) : config.inputFontSize()));
-                }
-            }
-            popoutFrame.revalidate();
-            messageInputField.setVisible(true);
-            sendButton.setVisible(true);
-            chatChannelDropdown.setVisible(true);
-        }
-    }
-
     public void reloadPlugin() {
         for (JFrame popoutTab : popoutTabs) {
             popoutTab.dispose();
@@ -509,13 +470,6 @@ public class ChatPanelSidebar extends PluginPanel {
 
             addComponentsForPopout();
             popoutFrame.add(tabbedPane);
-            if (config.chatEnabled()) {
-                addInputBox();
-                if (config.chatOutButtonFonts()){
-                    sendButton.setFont(getFontFromConfig(config.inputFontSize() > 10 ? (int)(config.inputFontSize() * 0.8) : config.inputFontSize()));
-                    chatChannelDropdown.setFont(getFontFromConfig(config.inputFontSize() > 10 ? (int)(config.inputFontSize() * 0.8) : config.inputFontSize()));
-                }
-            }
             popoutFrame.setMinimumSize(new Dimension(40, 10));
             popoutFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
             if (config.popoutAlwaysOnTop()) {
@@ -717,11 +671,7 @@ public class ChatPanelSidebar extends PluginPanel {
                     togglePopout();
                 }
             });
-            if (config.chatEnabled()) {
-                popoutFrame.add(popinButton, BorderLayout.EAST);
-            } else {
-                popoutFrame.add(popinButton, BorderLayout.SOUTH);
-            }
+            popoutFrame.add(popinButton, BorderLayout.SOUTH);
         }
         popinButton2 = new JButton("Pop in");
         popinButton2.addActionListener(e -> togglePopout());
@@ -798,201 +748,6 @@ public class ChatPanelSidebar extends PluginPanel {
         }
     }
 
-    public boolean boxSpawned = false; // Certainly there's a better way to keep track of this in the future...
-    private void addInputBox(){
-        JPanel inputPanel = chatOut();
-        popoutFrame.add(inputPanel, BorderLayout.SOUTH);
-        boxSpawned = true;
-    }
-
-    private JPanel chatOut() { // A lot of comments ahead to indicate some of the more important anti-auto-typing bits.
-        String[] chatChannels = {"Public", "Clan", "Friends"};
-        chatChannelDropdown = new JComboBox<>(chatChannels);
-        JPopupMenu privateOptionsMenu = new JPopupMenu();
-
-        tabbedPane.addChangeListener(e -> {
-            int selectedIndex = tabbedPane.getSelectedIndex();
-            if (selectedIndex != -1) {
-                String selectedTitle = tabbedPane.getTitleAt(selectedIndex);
-                if (selectedTitle.equals("Public") || selectedTitle.equals("Clan") || selectedTitle.equals("Friends") || privateChatNames.contains(selectedTitle)) {
-                    targetRecipient = selectedTitle;
-                    dropdownHandler(selectedTitle);
-                }
-            }
-        });
-
-        chatChannelDropdown.addActionListener(e -> {
-            String selectedItem = (String) chatChannelDropdown.getSelectedItem();
-            if ("Private  >".equals(selectedItem)) {
-                privateOptionsMenu.removeAll();
-
-                int startIndex = Math.max(0, privateChatNames.size() - 5);
-                for (int i = startIndex; i < privateChatNames.size(); i++) {
-                    String name = privateChatNames.get(i);
-                    JMenuItem privateName = new JMenuItem(name);
-                    if (config.chatOutButtonFonts()){
-                        privateName.setFont(getFontFromConfig(config.inputFontSize() > 10 ? (int)(config.inputFontSize() * 0.8) : config.inputFontSize()));
-                    }
-                    privateName.addActionListener(evt -> {
-                        targetRecipient = name;
-                        dropdownHandler(name);
-                    });
-                    privateOptionsMenu.add(privateName);
-                }
-                privateOptionsMenu.show(chatChannelDropdown, 0, chatChannelDropdown.getHeight());
-            } else {
-                targetRecipient = selectedItem;
-            }
-        });
-
-        JPanel inputPanel = new JPanel(new BorderLayout());
-        inputPanel.add(chatChannelDropdown, BorderLayout.WEST);
-        inputPanel.add(messageInputField, BorderLayout.CENTER);
-        inputPanel.add(sendButton, BorderLayout.EAST);
-
-        sendButton.addActionListener(e -> {
-            if (client.getGameState() == GameState.LOGGED_IN && invalidCharacterCheck(messageInputField.getText())) {
-                sendMessage();
-            } else {
-                messageError("Invalid characters in message.");
-            }
-        });
-
-        messageInputField.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyTyped(KeyEvent e) { // I hope the blank keyTyped will allow the client to monitor all inputs to Chat Panel for anti-botting measures.
-                e.getKeyChar(); // Result ignored by Chat Panel, but I think RL can track it.
-            }
-
-            @Override
-            public void keyPressed(KeyEvent e) {  // Enter to send, and one of the checks for invalid characters
-                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                    String message = messageInputField.getText();
-                    if (client.getGameState() == GameState.LOGGED_IN && invalidCharacterCheck(message)) {
-                        sendMessage();
-                    } else {
-                        messageError("Invalid characters in message.");
-                    }
-                }
-            }
-        });
-
-        ((AbstractDocument) messageInputField.getDocument()).setDocumentFilter(new DocumentFilter() {
-            @Override  // Max 80 char input to copy RL behaviour
-            public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr) throws BadLocationException {
-                if (string != null && (fb.getDocument().getLength() + string.length() <= 80)) {
-                    super.insertString(fb, offset, string, attr);
-                }
-            }
-
-            @Override  // Disables text entry when not logged in
-            public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
-                if (client.getGameState() == GameState.LOGGED_IN) {
-                    if (text != null && (fb.getDocument().getLength() - length + text.length() <= 80)) {
-                        super.replace(fb, offset, length, text, attrs);
-                    }
-                }
-            }
-        });
-
-        messageInputField.setTransferHandler(new TransferHandler() {
-            @Override  // Disable pasting, I think I only need the one line, but rather safe than sorry...
-            public boolean canImport(TransferSupport support) {return false;}
-            @Override
-            public boolean importData(TransferSupport support) {return false;}
-        });
-
-        return inputPanel;
-    }
-
-    public void dropdownHandler(String name){
-        boolean exists = false;
-        for (int j = 0; j < chatChannelDropdown.getItemCount(); j++) {
-            if (chatChannelDropdown.getItemAt(j).equals(name)) {
-                exists = true;
-                break;
-            }
-        }
-        if (!exists) {
-            chatChannelDropdown.addItem(name);
-            if (chatChannelDropdown.getItemCount() > 9) {
-                chatChannelDropdown.removeItemAt(4);
-            }
-        }
-        chatChannelDropdown.setSelectedItem(name);
-    }
-
-    public void addPrivateDD(ChatMessage event){
-        String privateName = event.getName().replace("[", "").replace("]", "").replaceAll("<img=\\d+>", "").trim();
-        if (!privateChatNames.contains(privateName) && config.chatEnabled()) {
-            if(privateChatNames.isEmpty()){
-                chatChannelDropdown.addItem("Private  >");}
-            privateChatNames.add(privateName);
-            if (privateChatNames.size() > 5) {
-                privateChatNames.remove(0);
-            }
-        }
-    }
-
-    private void sendMessage() {
-        if ((messageInputField != null && !messageErrorShown)) {
-            String message = messageInputField.getText();
-
-            if (!message.isEmpty() && client.getGameState() == GameState.LOGGED_IN) {  // Disables sending when empty, not logged in, or not in an FC/CC
-
-                if  (Objects.equals(targetRecipient, "Public")) {
-                    clientThread.invokeLater(() -> client.runScript(ScriptID.CHAT_SEND, message, 0, 0, 0, -1));
-                    messageInputField.setText("");
-                }
-
-                else if  (Objects.equals(targetRecipient, "Friends")) {
-                    FriendsChatManager friendsChatManager = client.getFriendsChatManager();
-                    if (friendsChatManager == null) {
-                        messageError("Not in a Friends Chat, not sending message");
-                        return;
-                    }
-                    clientThread.invokeLater(() -> client.runScript(ScriptID.CHAT_SEND, message, 2, 0, 0, -1));
-                    messageInputField.setText("");
-                }
-
-                else if  (Objects.equals(targetRecipient, "Clan")) {
-                    ClanChannel clanChannel = client.getClanChannel();
-                    if (clanChannel == null || clanChannel.getName() == null)
-                    {
-                        messageError("Not in a clan, not sending message");
-                        return;
-                    }
-                    clientThread.invokeLater(() -> client.runScript(ScriptID.CHAT_SEND, message, 3, 0, 0, -1));
-                    messageInputField.setText("");
-                }
-                else {
-                    clientThread.invokeLater(() -> client.runScript(ScriptID.PRIVMSG, targetRecipient, message)); // Maybe in future have this not send if PM target not logged in.
-                    messageInputField.setText("");
-                }
-                messageInputField.setText("");
-            } else {
-                messageError("Message is empty, not sending.");
-            }
-        }
-    }
-
-    private boolean invalidCharacterCheck(String message) {  // Disables characters that can't be entered into RL's text box and more! Could be toned down in the future, but rather safe than sorry.
-        return message.matches("[a-zA-Z0-9\\s!.,?;:'\"()\\[\\]{}\\-_/@#~=<>&*+%]*");
-    }
-
-    boolean messageErrorShown = false;
-    private void messageError(String errorMessage) { // Shows error message briefly in input field, and prevents the error message from being sent as a chat message if user spams send/enter.
-        String originalText = messageInputField.getText();
-        messageErrorShown = true;
-        messageInputField.setText(errorMessage);
-        Timer timer = new Timer(1000, e -> {
-            messageInputField.setText(originalText);
-            ((Timer) e.getSource()).stop();
-            messageErrorShown = false;
-        });
-        timer.start();
-    }
-
     private JTextPane createTextPane() {
         JTextPane textPane = new JTextPane();
         textPane.setEditable(false);
@@ -1035,16 +790,6 @@ public class ChatPanelSidebar extends PluginPanel {
         customChatArea2.setFont(getFontFromConfig(config.custom2ChatFontSize()));
         customChatArea3.setFont(getFontFromConfig(config.custom3ChatFontSize()));
         combatArea.setFont(getFontFromConfig(config.combatFontSize()));
-        messageInputField.setFont(getFontFromConfig(config.inputFontSize()));
-        if (isPopout && config.chatEnabled()){
-            if (config.chatOutButtonFonts()){
-                sendButton.setFont(getFontFromConfig(config.inputFontSize() > 10 ? (int)(config.inputFontSize() * 0.8) : config.inputFontSize()));
-                chatChannelDropdown.setFont(getFontFromConfig(config.inputFontSize() > 10 ? (int)(config.inputFontSize() * 0.8) : config.inputFontSize()));
-            }
-            popoutFrame.revalidate();
-            messageInputField.setPreferredSize(new Dimension(200, messageInputField.getFontMetrics(getFontFromConfig(config.inputFontSize())).getHeight() + 10));
-        }
-
         for (Map.Entry<String, JTextPane> entry : privateChatTabs.entrySet()) {
             JTextPane chatArea = entry.getValue();
             chatArea.setFont(getFontFromConfig(config.privateChatFontSize()));
@@ -1334,7 +1079,6 @@ public class ChatPanelSidebar extends PluginPanel {
         customChatArea3.setForeground(adjustColor(config.custom3ChatColor(), offset));
         combatArea.setBackground(config.combatBackgroundColor());
         combatArea.setForeground(adjustColor(config.combatTextColor(), offset));
-        messageInputField.setForeground(config.inputFontColor());
         for (Map.Entry<String, JTextPane> entry : privateChatTabs.entrySet()) {
             JTextPane chatArea = entry.getValue();
             chatArea.setBackground(config.privateChatBackground());
@@ -1344,7 +1088,7 @@ public class ChatPanelSidebar extends PluginPanel {
     }
 
     private static final String[] Identifiers = {"Public - ", "Clan - ", "Friends Chat - ", "ClanGuest - ", "ClanGIM - ", "ModChat - ", "ModPrivate - "};
-    private Color NameColor(JTextPane chatArea, String cleanedName, String eventName) {
+    private Color NameColor(JTextPane chatArea, String cleanedName) {
         if (config.enableMyNameColor()) {
             String baseName = cleanedName;
             for (String identifier : Identifiers) {
@@ -1358,9 +1102,6 @@ public class ChatPanelSidebar extends PluginPanel {
                     return config.myNameColor();
                 }
             }
-        }
-        if (config.OverrideNameColor() && (getColorForCase(eventName, chatArea) != chatArea.getForeground())) {
-            return getColorForCase(eventName, chatArea);
         }
 
         if (chatArea == publicChatArea) {
@@ -1392,10 +1133,7 @@ public class ChatPanelSidebar extends PluginPanel {
         return (Color.YELLOW);
     }
 
-    private Color TimestampColor(JTextPane chatArea, String eventName) {
-        if (config.OverrideTimestampColor() && (getColorForCase(eventName, chatArea) != chatArea.getForeground())) {
-            return getColorForCase(eventName, chatArea);
-        }
+    private Color TimestampColor(JTextPane chatArea) {
         if (chatArea == publicChatArea) {
             return config.publicChatTimestampColor();
         } else if (chatArea == privateChatArea) {
@@ -1560,12 +1298,29 @@ public class ChatPanelSidebar extends PluginPanel {
 
             SimpleAttributeSet timestampAttrs = new SimpleAttributeSet();
             Color timestampColor;
-            timestampColor = isOddLine ? adjustColor(TimestampColor(chatArea, eventName), config.chatColorOffset()) : TimestampColor(chatArea, eventName);
+            if (config.OverrideTimestampColor()) {
+                if (baseColor.equals(chatArea.getForeground())) {
+                    timestampColor = isOddLine ? adjustColor(TimestampColor(chatArea), config.chatColorOffset()) : TimestampColor(chatArea);
+                } else {
+                    timestampColor = isOddLine ? adjustColor(baseColor, config.chatColorOffset()) : baseColor;
+                }
+            } else {
+                timestampColor = isOddLine ? adjustColor(TimestampColor(chatArea), config.chatColorOffset()) : TimestampColor(chatArea);
+            }
             StyleConstants.setForeground(timestampAttrs, timestampColor);
 
 
             SimpleAttributeSet nameAttrs = new SimpleAttributeSet();
-            Color nameColor = isOddLine? adjustColor(NameColor(chatArea, cleanedName, eventName), config.chatColorOffset()) : NameColor(chatArea, cleanedName, eventName);
+            Color nameColor;
+            if (config.OverrideNameColor()) {
+                if (baseColor.equals(chatArea.getForeground())) {
+                    nameColor = isOddLine ? adjustColor(NameColor(chatArea, cleanedName), config.chatColorOffset()) : NameColor(chatArea, cleanedName);
+                } else {
+                    nameColor = isOddLine ? adjustColor(baseColor, config.chatColorOffset()) : baseColor;
+                }
+            } else {
+                nameColor = isOddLine ? adjustColor(NameColor(chatArea, cleanedName), config.chatColorOffset()) : NameColor(chatArea, cleanedName);
+            }
             StyleConstants.setForeground(nameAttrs, nameColor);
 
 
