@@ -9,8 +9,6 @@ The Chat Panel window can be moved freely like a normal windowed application, in
 
 ![image](https://github.com/Yenof/chat-panel/assets/122739279/93b9e17f-f326-4a2e-a8ba-d4a0b977fd0a)![fixedimage](https://github.com/user-attachments/assets/803ba7ca-ae16-4ac7-993b-2b4dd2853b5e)
 
-![image](https://github.com/user-attachments/assets/b4d0601a-cf3d-457b-ab0e-bcf062322175)
-
 
 
 
@@ -49,7 +47,7 @@ Options for Bold, Italic, Italic Bold, and Plain font styles.
 
 Timestamps can be set using SimpleDateFormat patterns. (HH:mm, yyyy.MM.dd, and more)
 
-![Screenshot from 2024-08-21 16-56-05](https://github.com/user-attachments/assets/9a2e785c-4a3e-4b5e-8083-452863599e70) ![image](https://github.com/user-attachments/assets/eec74a96-74bd-4873-8a4b-0ffaf0cbd02f)
+![Screenshot from 2024-08-21 16-56-05](https://github.com/user-attachments/assets/9a2e785c-4a3e-4b5e-8083-452863599e70) ![Screenshot from 2024-08-21 16-56-26](https://github.com/user-attachments/assets/39385ad7-24c8-4568-8f72-6e8a16edd2c8)
 
 
 
@@ -61,8 +59,6 @@ The pop out window can be set to "Always on Top", keeping it on top of other win
 
 "Remember Pop Out Position" saves the size and location of the pop out window to be used next time the pop out window is opened.
 
-"Chat Out" enables sending chat messages. It contains a Channel Selector dropdown that can be used to select targets, including 5 players recently messaged; or selecting the tab selects target.
-
 
 ![image](https://github.com/Yenof/chat-panel/assets/122739279/da8a596f-0d14-420e-b677-1ea28b52f9f6) ![Screenshot from 2024-08-21 16-59-57](https://github.com/user-attachments/assets/bbcae4ad-2d9a-4547-bd68-53c516f94555)
 
@@ -72,7 +68,7 @@ The pop out window can be set to "Always on Top", keeping it on top of other win
 
 Can choose between many tabs to display: Public, Private, Clan, Friends Chat, Game, All, Combat, and Custom (1, 2, 3).
 
-"Split PMs" spawns individual tabs for each private chat conversation. 
+By enabling "Split PMs" in the "Private Chat" settings, you can spawn individual tabs for each private chat conversation. 
 
 For the Combat Tab, there are options to only show combat events related to you, hide zero damage events, and show deaths in chat.
 
@@ -94,7 +90,7 @@ By using "Enable My Name Color" and "My Name Color" you can set a name color for
 Chosen words (Separated by commas) can be highlighted with the "Highlight Words" options. "Partial Word Highlighting" allows highlight words like "Sell" to highlight part of "Selling".
 
 
-![image](https://github.com/user-attachments/assets/1fc271cc-c585-47ce-ba3f-f3f39d958303) ![Screenshot from 2024-08-21 16-58-45](https://github.com/user-attachments/assets/e384bfdd-b981-4fd1-bf44-2e55a643b7cc)
+![Screenshot from 2024-08-21 17-00-19](https://github.com/user-attachments/assets/304e4d51-7fad-4c10-9eab-2bf4444181db) ![Screenshot from 2024-08-21 16-58-45](https://github.com/user-attachments/assets/e384bfdd-b981-4fd1-bf44-2e55a643b7cc)
 
 
 
