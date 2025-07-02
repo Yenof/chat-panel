@@ -160,10 +160,10 @@ public interface ChatPanelConfig extends Config {
     String popoutSection = "popoutwindow";
 
     @ConfigSection(
-            name = "Highlighting",
-            description = "Word highlighting settings",
+            name = "Highlighting & Filtering",
+            description = "Word highlighting and filtering settings",
             closedByDefault = true,
-            position = 3
+            position = 14
     )
     String highlightingSection = "highlightingSection";
 
@@ -1288,6 +1288,32 @@ public interface ChatPanelConfig extends Config {
 		return new Color(0xFFFFFF);
 	}
 
+
+    @ConfigItem(
+            keyName = "randomColors",
+            name = "Random Colors",
+            description = "Colors each letter of messages randomly-ish. ",
+            section = extrasSection,
+            position = 11
+    )
+    default boolean randomColors()
+    {
+        return false;
+    }
+
+    @Range(min = 10, max = 225)
+    @ConfigItem(
+            keyName = "randomColorsMinBrightness",
+            name = "Random Colors Minimum Brightness",
+            description = "The minimum brightness value for the random color for each letter. (Avoids dark colors) ",
+            section = extrasSection,
+            position = 12
+    )
+    default int randomColorsMinBrightness()
+    {
+        return 125;
+    }
+
     @ConfigItem(
             keyName = "hidePopoutIcon",
             name = "Hide Title Bar Icon",
@@ -1395,6 +1421,30 @@ public interface ChatPanelConfig extends Config {
     default boolean PartialMatching()
     {
         return true;
+    }
+
+    @ConfigItem(
+            keyName = "filteredMessages",
+            name = "Filtered Words",
+            description = "List of phrases or words to filter out of chat, separated by commas.",
+            section = highlightingSection,
+            position = 19
+    )
+    default String filteredMessages()
+    {
+        return "";
+    }
+
+    @ConfigItem(
+            keyName = "replaceFiltered",
+            name = "Remove Filtered Message",
+            description = "This removes the whole message if it contains a filtered word, otherwise the word is censored.",
+            section = highlightingSection,
+            position = 20
+    )
+    default boolean replaceInsteadOfRemove()
+    {
+        return false;
     }
 
 

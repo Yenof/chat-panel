@@ -1088,7 +1088,7 @@ public class ChatPanelSidebar extends PluginPanel {
     }
 
     private static final String[] Identifiers = {"Public - ", "Clan - ", "Friends Chat - ", "ClanGuest - ", "ClanGIM - ", "ModChat - ", "ModPrivate - "};
-    private Color NameColor(JTextPane chatArea, String cleanedName) {
+    private Color NameColor(JTextPane chatArea, String cleanedName, String eventName) {
         if (config.enableMyNameColor()) {
             String baseName = cleanedName;
             for (String identifier : Identifiers) {
@@ -1102,6 +1102,9 @@ public class ChatPanelSidebar extends PluginPanel {
                     return config.myNameColor();
                 }
             }
+        }
+        if (config.OverrideNameColor() && (getColorForCase(eventName, chatArea) != chatArea.getForeground())) {
+            return getColorForCase(eventName, chatArea);
         }
 
         if (chatArea == publicChatArea) {
@@ -1133,7 +1136,10 @@ public class ChatPanelSidebar extends PluginPanel {
         return (Color.YELLOW);
     }
 
-    private Color TimestampColor(JTextPane chatArea) {
+    private Color TimestampColor(JTextPane chatArea, String eventName) {
+        if (config.OverrideTimestampColor() && (getColorForCase(eventName, chatArea) != chatArea.getForeground())) {
+            return getColorForCase(eventName, chatArea);
+        }
         if (chatArea == publicChatArea) {
             return config.publicChatTimestampColor();
         } else if (chatArea == privateChatArea) {
@@ -1238,12 +1244,12 @@ public class ChatPanelSidebar extends PluginPanel {
         }
     }
 
-    public void addClanChatMessage(String timestamp, String name, String message, String eventName) {
-        addMessageToChatArea(clanChatArea, timestamp, name, message, eventName);
+    public void addClanChatMessage(String timestamp, String name, String cleanedMessage, String eventName) {
+        addMessageToChatArea(clanChatArea, timestamp, name, cleanedMessage, eventName);
     }
 
-    public void addFriendsChatMessage(String timestamp, String name, String message, String eventName) {
-        addMessageToChatArea(friendsChatArea, timestamp, name, message, eventName);
+    public void addFriendsChatMessage(String timestamp, String name, String cleanedMessage, String eventName) {
+        addMessageToChatArea(friendsChatArea, timestamp, name, cleanedMessage, eventName);
     }
 
     public void addAllChatMessage(String timestamp, String cleanedName, String cleanedMessage, String eventName) {
@@ -1290,6 +1296,25 @@ public class ChatPanelSidebar extends PluginPanel {
             int extraLines = config.lineSpacing();
             int offset = extraLines;
 
+
+            final String[] tempMessage = new String[] { message };
+            if (config.replaceInsteadOfRemove()) {
+                for (String filter : config.filteredMessages().trim().split("\\s*,\\s*")) {
+                    if (filter.trim().isEmpty()) continue;
+                    if (message.toLowerCase().contains(filter.toLowerCase())) {
+                        return;
+                    }
+                }
+            } else {
+                for (String filter : config.filteredMessages().trim().split("\\s*,\\s*")) {
+                    if (filter.trim().isEmpty()) continue;
+                    String regex = "(?i)" + Pattern.quote(filter);
+                    tempMessage[0] = tempMessage[0].replaceAll(regex, "*".repeat(filter.length()));
+                }
+            }
+
+            final String filteredMessage = tempMessage[0];
+
             Color baseColor = getColorForCase(eventName, chatArea);
             int lineCount = doc.getDefaultRootElement().getElementCount();
             int effectiveLineCount = (lineCount + extraLines - 1) / (extraLines + 1);
@@ -1298,35 +1323,25 @@ public class ChatPanelSidebar extends PluginPanel {
 
             SimpleAttributeSet timestampAttrs = new SimpleAttributeSet();
             Color timestampColor;
-            if (config.OverrideTimestampColor()) {
-                if (baseColor.equals(chatArea.getForeground())) {
-                    timestampColor = isOddLine ? adjustColor(TimestampColor(chatArea), config.chatColorOffset()) : TimestampColor(chatArea);
-                } else {
-                    timestampColor = isOddLine ? adjustColor(baseColor, config.chatColorOffset()) : baseColor;
-                }
-            } else {
-                timestampColor = isOddLine ? adjustColor(TimestampColor(chatArea), config.chatColorOffset()) : TimestampColor(chatArea);
-            }
+            timestampColor = isOddLine ? adjustColor(TimestampColor(chatArea, eventName), config.chatColorOffset()) : TimestampColor(chatArea, eventName);
             StyleConstants.setForeground(timestampAttrs, timestampColor);
 
 
             SimpleAttributeSet nameAttrs = new SimpleAttributeSet();
-            Color nameColor;
-            if (config.OverrideNameColor()) {
-                if (baseColor.equals(chatArea.getForeground())) {
-                    nameColor = isOddLine ? adjustColor(NameColor(chatArea, cleanedName), config.chatColorOffset()) : NameColor(chatArea, cleanedName);
-                } else {
-                    nameColor = isOddLine ? adjustColor(baseColor, config.chatColorOffset()) : baseColor;
-                }
-            } else {
-                nameColor = isOddLine ? adjustColor(NameColor(chatArea, cleanedName), config.chatColorOffset()) : NameColor(chatArea, cleanedName);
-            }
+            Color nameColor = isOddLine ? adjustColor(NameColor(chatArea, cleanedName, eventName), config.chatColorOffset()) : NameColor(chatArea, cleanedName, eventName);
             StyleConstants.setForeground(nameAttrs, nameColor);
 
-
-            SimpleAttributeSet messageAttrs = new SimpleAttributeSet();
-            Color messageColor = isOddLine? adjustColor(baseColor, config.chatColorOffset()) : baseColor;
-            StyleConstants.setForeground(messageAttrs, messageColor);
+            java.util.function.Supplier<Color> getRandomBrightColor = () -> {
+                int r, g, b;
+                do {
+                    r = (int)(Math.random() * 256);
+                    g = (int)(Math.random() * 256);
+                    b = (int)(Math.random() * 256);
+                    double brightness = 0.299 * r + 0.587 * g + 0.114 * b; // Apparently, ITU-R BT.601 is the values used by video games to determine what colors are perceived to be bright? Very cool, what a world.
+                    if (brightness >= config.randomColorsMinBrightness()) break;
+                } while (true);
+                return new Color(r, g, b);
+            };
 
             try {
 				if (!timestamp.isEmpty()) {
@@ -1336,19 +1351,31 @@ public class ChatPanelSidebar extends PluginPanel {
                     doc.insertString(doc.getLength(), "[" + cleanedName + "]: ", nameAttrs);
                 }
 
-                doc.insertString(doc.getLength(), message, messageAttrs);
+                if (config.randomColors()) {
+                    for (char c : filteredMessage.toCharArray()) {
+                        SimpleAttributeSet charAttrs = new SimpleAttributeSet();
+                        Color randomColor = getRandomBrightColor.get();
+                        StyleConstants.setForeground(charAttrs, randomColor);
+                        doc.insertString(doc.getLength(), String.valueOf(c), charAttrs);
+                    }
+                } else {
+                    SimpleAttributeSet messageAttrs = new SimpleAttributeSet();
+                    Color messageColor = isOddLine ? adjustColor(baseColor, config.chatColorOffset()) : baseColor;
+                    StyleConstants.setForeground(messageAttrs, messageColor);
+                    doc.insertString(doc.getLength(), filteredMessage, messageAttrs);
+                }
 
                 if (!config.highlightWords3().trim().isEmpty()) {
                     String[] highlightWords3Array = config.highlightWords3().split("\\s*,\\s*");
-                    highlightWords(message, highlightWords3Array, config.highlightColor3(), config.PartialMatching(), doc);
+                    highlightWords(filteredMessage, highlightWords3Array, config.highlightColor3(), config.PartialMatching(), doc);
                 }
                 if (!config.highlightWords2().trim().isEmpty()) {
                     String[] highlightWords2Array = config.highlightWords2().split("\\s*,\\s*");
-                    highlightWords(message, highlightWords2Array, config.highlightColor2(), config.PartialMatching(), doc);
+                    highlightWords(filteredMessage, highlightWords2Array, config.highlightColor2(), config.PartialMatching(), doc);
                 }
                 if (!config.highlightWords().trim().isEmpty()) {
                     String[] highlightWordsArray = config.highlightWords().split("\\s*,\\s*");
-                    highlightWords(message, highlightWordsArray, config.highlightColor(), config.PartialMatching(), doc);
+                    highlightWords(filteredMessage, highlightWordsArray, config.highlightColor(), config.PartialMatching(), doc);
                 }
 
                 doc.insertString(doc.getLength(), "\n", null);
