@@ -3,6 +3,8 @@ package com.chatpanel;
 import net.runelite.client.config.*;
 
 import java.awt.*;
+import java.util.Collections;
+import java.util.Set;
 
 @ConfigGroup("chatpanel")
 public interface ChatPanelConfig extends Config {
@@ -61,6 +63,20 @@ public interface ChatPanelConfig extends Config {
             return name;
         }
 
+    }
+
+    enum NotifiableTab {
+        All,
+        Clan,
+        Combat,
+        Friends,
+        Game,
+        Private,
+        PMTabs,
+        Public,
+        Custom1,
+        Custom2,
+        Custom3,
     }
 
     @ConfigSection(
@@ -168,6 +184,15 @@ public interface ChatPanelConfig extends Config {
     String highlightingSection = "highlightingSection";
 
     @ConfigSection(
+            name = "Notifications",
+            description = "Notifications settings",
+            closedByDefault = true,
+            position = 16
+    )
+    String notificationsSection = "notificationsSection";
+
+
+    @ConfigSection(
             name = "Tabs",
             description = "Tab selection. (Recommended 4)",
             closedByDefault = true,
@@ -187,7 +212,7 @@ public interface ChatPanelConfig extends Config {
             name = "Extras",
             description = "Additional settings and tweaks",
             closedByDefault = true,
-            position = 16
+            position = 22
     )
     String extrasSection = "extras";
 
@@ -1132,6 +1157,83 @@ public interface ChatPanelConfig extends Config {
     }
 
     @ConfigItem(
+            keyName = "notifiableTabs",
+            name = "Notification Tabs",
+            description = "Highlights selected tabs when they receive new content.<br>(Ctrl + Click to select multiple)",
+            section = notificationsSection,
+            position = 2
+    )
+    default Set<NotifiableTab> notifiableTabs() {
+        return Collections.singleton(NotifiableTab.Private);
+    }
+
+    @ConfigItem(
+            keyName = "notificationColor",
+            name = "Notification Color",
+            description = "Color of the tab notifications.",
+            section = notificationsSection,
+            position = 4
+    )
+    default Color notificationColor()
+    {
+        return new Color(0x9B6400);
+    }
+
+    @ConfigItem(
+            keyName = "tabTextColor",
+            name = "Tab Name",
+            description = "Color of the text in the tab names.",
+            section = tabSection,
+            position = 0
+    )
+    default Color tabTextColor()
+    {
+        return null;
+    }
+
+    @Range(min = 5, max = 500)
+    @ConfigItem(
+            keyName = "tabFontSize",
+            name = "Tab Font Size",
+            description = "Sets the size of tab names. <br>May need to resize window to view all tabs.",
+            section = tabSection,
+            position = 0
+    )
+    default int tabFontSize()
+    {
+        return 16;
+    }
+
+    @Range(min = 5, max = 500)
+    @ConfigItem(
+            keyName = "tabFonts",
+            name = "Tab Fonts",
+            description = "Allows the tabs to use chosen fonts.",
+            section = tabSection,
+            position = 0
+    )
+    default boolean tabFonts()
+    {
+        return false;
+    }
+
+
+
+    @ConfigItem(
+            keyName = "underlineColor",
+            name = "Selection Underline",
+            description = "Sets the color of the selected tab indicator.",
+            section = tabSection,
+            position = 1
+    )
+    default Color underlineColor()
+    {
+        return null;
+    }
+
+
+
+    @ConfigItem(
             keyName = "showPublicChat",
             name = "Show Public Chat",
             description = "Show/hide the Public Chat tab",
@@ -1184,7 +1286,7 @@ public interface ChatPanelConfig extends Config {
             name = "Show All Chat",
             description = "Show/hide the All Chat tab",
             section = tabSection,
-            position = 0
+            position = 1
     )
     default boolean showAllChat()
     {

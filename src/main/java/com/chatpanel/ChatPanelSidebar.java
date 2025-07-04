@@ -2,6 +2,7 @@ package com.chatpanel;
 
 import net.runelite.api.Client;
 import net.runelite.client.RuneLite;
+import net.runelite.client.ui.ColorScheme;
 import net.runelite.client.ui.PluginPanel;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -98,6 +99,7 @@ public class ChatPanelSidebar extends PluginPanel {
                     int tabIndex = tabbedPane.indexAtLocation(e.getX(), e.getY());
                     if (tabIndex != -1) {
                         tabbedPane.setSelectedIndex(tabIndex);
+                        tabbedPane.setBackgroundAt(tabIndex, ColorScheme.DARK_GRAY_COLOR);
                         showPopupMenu(e.getComponent(), e.getX(), e.getY(), tabIndex);
                     }
                 }
@@ -105,6 +107,12 @@ public class ChatPanelSidebar extends PluginPanel {
                     int tabIndex = tabbedPane.indexAtLocation(e.getX(), e.getY());
                     if (tabIndex != -1) {
                         popOutTab(tabIndex);
+                    }
+                }
+                if (SwingUtilities.isLeftMouseButton(e)) {
+                    int tabIndex = tabbedPane.indexAtLocation(e.getX(), e.getY());
+                    if (tabIndex != -1) {
+                        tabbedPane.setBackgroundAt(tabIndex, ColorScheme.DARK_GRAY_COLOR);
                     }
                 }
             }
@@ -790,6 +798,14 @@ public class ChatPanelSidebar extends PluginPanel {
         customChatArea2.setFont(getFontFromConfig(config.custom2ChatFontSize()));
         customChatArea3.setFont(getFontFromConfig(config.custom3ChatFontSize()));
         combatArea.setFont(getFontFromConfig(config.combatFontSize()));
+        if (config.tabFonts() && config.fontFamily() != ChatPanelConfig.FontFamily.NORMAL){
+            tabbedPane.setFont(getFontFromConfig(config.tabFontSize()));
+        } else {
+            tabbedPane.setFont(new Font("RuneScape", Font.PLAIN,config.tabFontSize()));
+        }
+        tabbedPane.revalidate();
+        tabbedPane.repaint();
+
         for (Map.Entry<String, JTextPane> entry : privateChatTabs.entrySet()) {
             JTextPane chatArea = entry.getValue();
             chatArea.setFont(getFontFromConfig(config.privateChatFontSize()));
@@ -924,6 +940,44 @@ public class ChatPanelSidebar extends PluginPanel {
         }
     }
 
+    public void highlightTabByTitle(JTabbedPane tabbedPane, String title) {
+        SwingUtilities.invokeLater(() -> {
+            for (int i = 0; i < tabbedPane.getTabCount(); i++) {
+                if (title.equals(tabbedPane.getTitleAt(i))) {
+                    if (tabbedPane.getSelectedIndex() != i) {
+                        tabbedPane.setBackgroundAt(i, config.notificationColor());
+                    } else {
+                        tabbedPane.setBackgroundAt(i, ColorScheme.DARK_GRAY_COLOR);
+                    }
+                    break;
+                }
+            }
+        });
+    }
+
+    public void notifier(String title) {
+        ChatPanelConfig.NotifiableTab tab;
+        tab = title.startsWith("PMTab") ? ChatPanelConfig.NotifiableTab.PMTabs : ChatPanelConfig.NotifiableTab.valueOf(title);
+        if (config.notifiableTabs().contains(tab)) {
+            if(title.startsWith("PMTab")){
+                highlightTabByTitle(tabbedPane, title.substring(5));
+            }
+            switch (title) {
+                case "Custom1":
+                    highlightTabByTitle(tabbedPane, config.custom1Tabname());
+                    break;
+                case "Custom2":
+                    highlightTabByTitle(tabbedPane, config.custom2Tabname());
+                    break;
+                case "Custom3":
+                    highlightTabByTitle(tabbedPane, config.custom3Tabname());
+                    break;
+                default:
+                    highlightTabByTitle(tabbedPane, title);
+                    break;
+            }
+        }
+    }
 
     private Color getColorForCase(String eventName, JTextPane chatArea) {
         Color color;
@@ -1079,6 +1133,12 @@ public class ChatPanelSidebar extends PluginPanel {
         customChatArea3.setForeground(adjustColor(config.custom3ChatColor(), offset));
         combatArea.setBackground(config.combatBackgroundColor());
         combatArea.setForeground(adjustColor(config.combatTextColor(), offset));
+        tabbedPane.setForeground(config.tabTextColor());
+        UIManager.put("TabbedPane.underlineColor", config.underlineColor());
+        UIManager.put("TabbedPane.inactiveUnderlineColor", config.underlineColor());
+        SwingUtilities.invokeLater(() -> {
+            SwingUtilities.updateComponentTreeUI(tabbedPane);
+        });
         for (Map.Entry<String, JTextPane> entry : privateChatTabs.entrySet()) {
             JTextPane chatArea = entry.getValue();
             chatArea.setBackground(config.privateChatBackground());
@@ -1230,55 +1290,70 @@ public class ChatPanelSidebar extends PluginPanel {
             setScrollPaneSize((JScrollPane) tabbedPane.getComponentAt(9));
         }
     }
+
     public void addPublicChatMessage(String timestamp, String cleanedName, String message, String eventName) {
         addMessageToChatArea(publicChatArea, timestamp, cleanedName, message, eventName);
+        notifier("Public");
     }
 
     public void addPrivateChatMessage(String timestamp, String name, String message, String eventName) {
         if (config.splitPMs()){
             JTextPane chatArea = createPrivateChatTabs(name);
             addMessageToChatArea(chatArea, timestamp, name, message, eventName);
+            notifier("PMTab" +(name.substring(name.indexOf(' ') + 1)));
         }
         if (config.showPrivateChat() && !maxPMmessageshown || mergedPMs) {
             addMessageToChatArea(privateChatArea, timestamp, name, message, eventName);
+            notifier("Private");
         }
     }
 
     public void addClanChatMessage(String timestamp, String name, String cleanedMessage, String eventName) {
+        cleanedMessage = filterAllChatMessage(cleanedMessage);
         addMessageToChatArea(clanChatArea, timestamp, name, cleanedMessage, eventName);
+        notifier("Clan");
     }
 
     public void addFriendsChatMessage(String timestamp, String name, String cleanedMessage, String eventName) {
+        cleanedMessage = filterAllChatMessage(cleanedMessage);
         addMessageToChatArea(friendsChatArea, timestamp, name, cleanedMessage, eventName);
+        notifier("Friends");
     }
 
     public void addAllChatMessage(String timestamp, String cleanedName, String cleanedMessage, String eventName) {
         cleanedMessage = filterAllChatMessage(cleanedMessage);
         addMessageToChatArea(allChatArea, timestamp, cleanedName, cleanedMessage, eventName);
+        notifier("All");
     }
 
     public void addCustomChatMessage(String timestamp, String cleanedName, String cleanedMessage, String eventName) {
         cleanedMessage = filterAllChatMessage(cleanedMessage);
         addMessageToChatArea(customChatArea, timestamp, cleanedName, cleanedMessage, eventName);
+        notifier("Custom1");
     }
 
     public void addCustom2ChatMessage(String timestamp, String cleanedName, String cleanedMessage, String eventName) {
         cleanedMessage = filterAllChatMessage(cleanedMessage);
         addMessageToChatArea(customChatArea2, timestamp, cleanedName, cleanedMessage, eventName);
+        notifier("Custom2");
     }
 
     public void addCustom3ChatMessage(String timestamp, String cleanedName, String cleanedMessage, String eventName) {
         cleanedMessage = filterAllChatMessage(cleanedMessage);
         addMessageToChatArea(customChatArea3, timestamp, cleanedName, cleanedMessage, eventName);
+        notifier("Custom3");
     }
 
     public void addGameChatMessage(String timestamp, String cleanedName, String cleanedMessage, String eventName) {
         cleanedMessage = filterAllChatMessage(cleanedMessage);
         addMessageToChatArea(gameChatArea, timestamp, cleanedName, cleanedMessage, eventName);
+        notifier("Game");
+
     }
 
     public void addCombatMessage(String timestamp, String cleanedName, String combatMessage, String eventName) {
         addMessageToChatArea(combatArea, timestamp, cleanedName, combatMessage, eventName);
+        notifier("Combat");
     }
 
     private String filterAllChatMessage(String message) {

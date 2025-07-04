@@ -749,7 +749,7 @@ public class ChatPanelPlugin extends Plugin
                 }
                 chatPanelSidebar.reloadPlugin();
             }
-            if (event.getKey().startsWith("font") || event.getKey().endsWith("FontSize")) {
+            if (event.getKey().startsWith("font") || event.getKey().endsWith("FontSize") || event.getKey().equals("tabFonts")) {
                 chatPanelSidebar.updateFonts();
             }
             if (event.getKey().equals("fontFamily") && (config.fontFamily().equals(ChatPanelConfig.FontFamily.CUSTOM_FONT))) {
