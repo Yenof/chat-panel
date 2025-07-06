@@ -1,7 +1,7 @@
 # Chat Panel Plugin
 
 
-This plugin displays in-game chat in a seperate window or the side panel.
+This plugin displays in-game chat in a separate window or the side panel.
 
 The Chat Panel window can be moved freely like a normal windowed application, including to different monitors.
 
@@ -28,7 +28,8 @@ The Chat Panel window can be moved freely like a normal windowed application, in
 There are many config groups that contain the plugin's settings.<br/>
 They can be expanded by clicking on the group name or little arrows.
 
-![image](https://github.com/user-attachments/assets/c9b42517-113f-4159-ac54-2444a6b870f0) ![image](https://github.com/Yenof/chat-panel/assets/122739279/b561e3ab-7a41-4c49-a90b-ae1fb9552dcc)
+
+![image](https://github.com/user-attachments/assets/5a187a52-abb7-464e-bc9b-b10ba9be7e87) ![image](https://github.com/Yenof/chat-panel/assets/122739279/b561e3ab-7a41-4c49-a90b-ae1fb9552dcc)
 
 
 Configurable text, background, timestamp, and name colors per tab.
@@ -37,7 +38,7 @@ Adjustable Font sizes per tab. (Min size 5, max 200)
 
 ![Screenshot from 2024-08-21 16-55-26](https://github.com/user-attachments/assets/41cbed28-8bc1-4e5b-ba2c-23341f7506b1)
 
-"Odd Row Shading" tints alternating lines of chat for visability. Negative entries darken, positive lighten.
+"Odd Row Shading" tints alternating lines of chat for visibility. Negative entries darken, positive lighten.
 
 Line spacing adds space in between messages. (Max 10)
 
@@ -59,8 +60,7 @@ The pop out window can be set to "Always on Top", keeping it on top of other win
 
 "Remember Pop Out Position" saves the size and location of the pop out window to be used next time the pop out window is opened.
 
-
-![image](https://github.com/Yenof/chat-panel/assets/122739279/da8a596f-0d14-420e-b677-1ea28b52f9f6) ![Screenshot from 2024-08-21 16-59-57](https://github.com/user-attachments/assets/bbcae4ad-2d9a-4547-bd68-53c516f94555)
+![image](https://github.com/user-attachments/assets/fae88c8f-edc4-4930-a6f8-660a5f064aaa) ![Screenshot from 2024-08-21 16-59-57](https://github.com/user-attachments/assets/bbcae4ad-2d9a-4547-bd68-53c516f94555)
 
 
 
@@ -68,12 +68,24 @@ The pop out window can be set to "Always on Top", keeping it on top of other win
 
 Can choose between many tabs to display: Public, Private, Clan, Friends Chat, Game, All, Combat, and Custom (1, 2, 3).
 
+"Tab Font" allows your choice of Font from the General section to apply to the tab names. 
+
 By enabling "Split PMs" in the "Private Chat" settings, you can spawn individual tabs for each private chat conversation. 
 
 For the Combat Tab, there are options to only show combat events related to you, hide zero damage events, and show deaths in chat.
 
 The Message Type Coloring section allows you to select a color for a chat type. (Public Chat green, Examine text red). <br>
 These choices persist through all Chat Tabs, overriding the text colors chosen in the Chat Tabs.
+
+
+Chosen words (separated by commas) can be highlighted with the "Highlight Words" options. "Partial Word Highlighting" allows highlight words like "Sell" to highlight part of "Selling".
+
+Similarly, chosen words (separated by commas) can be censored from chat using the "Filtered Words" setting.
+By default this censors the filtered word, but with the "Remove Filtered Message" option enabled it removes the entire message. 
+
+The Notifications section allows tabs to be highlighted when they receive a new content. Select the tabs you want notifications for by holding Ctrl and clicking them.
+
+![image](https://github.com/user-attachments/assets/774fa4a0-d4db-46d3-beef-3cf1dd751e94) ![image](https://github.com/user-attachments/assets/f11286dd-efe6-4e1a-a585-bef3aa963255)
 
 The height of the Chat Area in the side panel can be adjusted, recommended to be less than the height of your client.
 
@@ -87,10 +99,9 @@ Can disable the icon for the pop out windows.
 
 By using "Enable My Name Color" and "My Name Color" you can set a name color for when a message has your username in the name field.
 
-Chosen words (Separated by commas) can be highlighted with the "Highlight Words" options. "Partial Word Highlighting" allows highlight words like "Sell" to highlight part of "Selling".
+"Random Colors" randomly-ish recolors individual letters, with a minimum brightness set by the corresponding setting. 
 
-
-![Screenshot from 2024-08-21 17-00-19](https://github.com/user-attachments/assets/304e4d51-7fad-4c10-9eab-2bf4444181db) ![Screenshot from 2024-08-21 16-58-45](https://github.com/user-attachments/assets/e384bfdd-b981-4fd1-bf44-2e55a643b7cc)
+![image](https://github.com/user-attachments/assets/6240f1f5-9150-438b-8e9e-a44b19af8583) 
 
 
 
@@ -144,7 +155,9 @@ Screenshots are taken on X11/GNOME/22.04 with RuneLite's Custom Chrome enabled.
 <br/>
 <br/>
 <br/>
-I love feedback, please feel free to reach out with any comments, concerns, or questions to @Yenofthunder on Discord. :D<br/>
+<a href="https://discord.gg/AT44tqXVwH"><img src='https://img.shields.io/discord/1307357303099621426?color=ffd700&&logo=discord&logoColor=%23ffd700&style=for-the-badge'/></a>
+
+I love feedback, please feel free to reach out with any comments, concerns, or questions to the Chat Panel Discord. :D<br/>
 or<br/>
 Issues can be posted to Github Issues.<br/>
 Suggestions can be posted to Github Discussions.
