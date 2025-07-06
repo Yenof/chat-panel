@@ -75,8 +75,8 @@ public class ChatPanelPlugin extends Plugin
     private void displayUpdateMessage()
     {
         double lastVersionShown = config.getVersion();
-        String name = "Huge Update";
-        String updateMessage = "Chat Panel can now chat! :D\nWhile in popout mode you can now send chat messages!\nPM's are now split into individual tabs too.\n(Hint: You can turn off Chat Out, Split PMs, Pop In button, and more in Chat Panel configuration.)";
+        String name = "Update";
+        String updateMessage = "Chat Panel has been updated, tabs had a makeover!\nYou can now choose the font size, color, and style of the tab name.\nPMs are now split into individual tabs.\n(Hint: You can turn off Split PMs in Chat Panel configuration.)";
         String timestamp = getCurrentTimestamp();
         String eventName = "UPDATE_MESSAGE";
 
