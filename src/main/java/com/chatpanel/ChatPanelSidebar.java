@@ -32,7 +32,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
-
 public class ChatPanelSidebar extends PluginPanel {
     private final JTextPane publicChatArea;
     private final JTextPane privateChatArea;
@@ -1228,6 +1227,25 @@ public class ChatPanelSidebar extends PluginPanel {
         }
         return Color.YELLOW;
     }
+    private Color GroupColor(JTextPane chatArea, String eventName) {
+        if (config.OverrideGroupNameColor() && (getColorForCase(eventName, chatArea) != chatArea.getForeground())) {
+            return getColorForCase(eventName, chatArea);
+        }
+        if (chatArea == clanChatArea) {
+            return config.clanChatGroupNameColor();
+        } else if (chatArea == friendsChatArea) {
+            return config.friendsChatGroupNameColor();
+        } else if (chatArea == allChatArea) {
+            return config.allChatGroupNameColor();
+        } else if (chatArea == customChatArea) {
+            return config.customChatGroupNameColor();
+        } else if (chatArea == customChatArea2) {
+            return config.custom2ChatGroupNameColor();
+        } else if (chatArea == customChatArea3) {
+            return config.custom3ChatGroupNameColor();
+        }
+        return Color.YELLOW;
+    }
 
 
     private Color adjustColor(Color color, int offset) {
@@ -1291,6 +1309,19 @@ public class ChatPanelSidebar extends PluginPanel {
         }
     }
 
+    public String groupNameFinder(String eventName) {
+        String groupName = null;
+        if (((eventName.contains("CLAN") || eventName.equals("CHALREQ_CLANCHAT")) && !eventName.contains("GUEST")) && client.getClanChannel() != null && config.showClanName()) {
+            groupName = client.getClanChannel().getName();
+        } else if ((eventName.equals("CLAN_GUEST_MESSAGE") || eventName.equals("CLAN_GUEST_CHAT")) && client.getGuestClanChannel() != null && config.showClanName()) {
+            groupName = client.getGuestClanChannel().getName();
+        } else if (eventName.contains("FRIENDS") && client.getFriendsChatManager() != null && config.showFCName()) {
+            groupName = client.getFriendsChatManager().getName();
+        }
+        return groupName;
+    }
+
+
     public void addPublicChatMessage(String timestamp, String cleanedName, String message, String eventName) {
         addMessageToChatArea(publicChatArea, timestamp, cleanedName, message, eventName);
         notifier("Public");
@@ -1348,7 +1379,6 @@ public class ChatPanelSidebar extends PluginPanel {
         cleanedMessage = filterAllChatMessage(cleanedMessage);
         addMessageToChatArea(gameChatArea, timestamp, cleanedName, cleanedMessage, eventName);
         notifier("Game");
-
     }
 
     public void addCombatMessage(String timestamp, String cleanedName, String combatMessage, String eventName) {
@@ -1362,6 +1392,7 @@ public class ChatPanelSidebar extends PluginPanel {
 
     private void addMessageToChatArea(JTextPane chatArea, String timestamp, String cleanedName, String message, String eventName) {
         SwingUtilities.invokeLater(() -> {
+            String groupName = groupNameFinder(eventName);
             StyledDocument doc = chatArea.getStyledDocument();
             JScrollPane scrollPane = (JScrollPane) chatArea.getParent().getParent();
             JScrollBar verticalScrollBar = scrollPane.getVerticalScrollBar();
@@ -1401,6 +1432,9 @@ public class ChatPanelSidebar extends PluginPanel {
             timestampColor = isOddLine ? adjustColor(TimestampColor(chatArea, eventName), config.chatColorOffset()) : TimestampColor(chatArea, eventName);
             StyleConstants.setForeground(timestampAttrs, timestampColor);
 
+            SimpleAttributeSet groupAttrs = new SimpleAttributeSet();
+            Color groupColor = isOddLine ? adjustColor(GroupColor(chatArea, eventName), config.chatColorOffset()) : GroupColor(chatArea, eventName);
+            StyleConstants.setForeground(groupAttrs, groupColor);
 
             SimpleAttributeSet nameAttrs = new SimpleAttributeSet();
             Color nameColor = isOddLine ? adjustColor(NameColor(chatArea, cleanedName, eventName), config.chatColorOffset()) : NameColor(chatArea, cleanedName, eventName);
@@ -1422,6 +1456,9 @@ public class ChatPanelSidebar extends PluginPanel {
 				if (!timestamp.isEmpty()) {
 					doc.insertString(doc.getLength(), "[" + timestamp + "] ", timestampAttrs);
 				}
+                if ((config.showClanName() || config.showFCName()) && groupName != null) {
+                    doc.insertString(doc.getLength(), "[" + groupName + "] ", groupAttrs);
+                }
 				if (!cleanedName.isEmpty()) {
                     doc.insertString(doc.getLength(), "[" + cleanedName + "]: ", nameAttrs);
                 }

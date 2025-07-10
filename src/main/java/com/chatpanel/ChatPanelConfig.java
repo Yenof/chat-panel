@@ -452,8 +452,8 @@ public interface ChatPanelConfig extends Config {
 
     @ConfigItem(
             keyName = "clanChatColor",
-            name = "Clan Chat Color",
-            description = "Configures the font color of the clan chat messages.",
+            name = "Chat Color",
+            description = "Configures the font color of messages in the Clan tab.",
             section = clanChatSection,
             position = 1
     )
@@ -464,8 +464,8 @@ public interface ChatPanelConfig extends Config {
 
     @ConfigItem(
             keyName = "clanChatBackgroundColor",
-            name = "Clan Chat Background",
-            description = "Configures the background color of the clan chat.",
+            name = "Background Color",
+            description = "Configures the background color of the Clan tab.",
             section = clanChatSection,
             position = 0
     )
@@ -476,8 +476,8 @@ public interface ChatPanelConfig extends Config {
 
     @ConfigItem(
             keyName = "clanChatNameColor",
-            name = "Clan Chat Name Color",
-            description = "Configures the player name color for clan chat.",
+            name = "Name Color",
+            description = "Configures the player name color for Clan tab.",
             section = clanChatSection,
             position = 2
     )
@@ -488,8 +488,8 @@ public interface ChatPanelConfig extends Config {
 
     @ConfigItem(
             keyName = "clanChatTimestampColor",
-            name = "Clan Chat Timestamp Color",
-            description = "Configures the timestamp color for clan chat.",
+            name = "Timestamp Color",
+            description = "Configures the timestamp color for Clan tab.",
             section = clanChatSection,
             position = 2
     )
@@ -498,13 +498,25 @@ public interface ChatPanelConfig extends Config {
         return clanChatColor();
     }
 
+    @ConfigItem(
+            keyName = "clanChatGroupNameColor",
+            name = "Clan Name Color",
+            description = "Configures the color of the Clan name in the Clan tab.",
+            section = clanChatSection,
+            position = 5
+    )
+    default Color clanChatGroupNameColor()
+    {
+        return clanChatColor();
+    }
+
     @Range(min = 5, max = 200)
     @ConfigItem(
             keyName = "clanChatFontSize",
-            name = "Clan Chat Font Size",
-            description = "Configures the font size of the clan chat messages.",
+            name = "Font Size",
+            description = "Configures the font size of the Clan tab messages.",
             section = clanChatSection,
-            position = 3
+            position = 6
     )
     default int clanChatFontSize()
     {
@@ -512,9 +524,21 @@ public interface ChatPanelConfig extends Config {
     }
 
     @ConfigItem(
+            keyName = "displayClanName",
+            name = "Show Clan Name",
+            description = "Adds the clan name to all clan messages, including other tabs.",
+            section = clanChatSection,
+            position = 8
+    )
+    default boolean showClanName()
+    {
+        return false;
+    }
+
+    @ConfigItem(
             keyName = "friendsChatColor",
-            name = "Friends Chat Color",
-            description = "Configures the font color of the Friends Chat messages.",
+            name = "Chat Color",
+            description = "Configures the font color of the Friends Chat tab.",
             section = friendsChatSection,
             position = 1
     )
@@ -525,8 +549,8 @@ public interface ChatPanelConfig extends Config {
 
     @ConfigItem(
             keyName = "friendsChatBackground",
-            name = "Friends Chat Background",
-            description = "Configures the background color of the Friends Chat.",
+            name = "Background Color",
+            description = "Configures the background color of the Friends Chat tab.",
             section = friendsChatSection,
             position = 0
     )
@@ -537,8 +561,8 @@ public interface ChatPanelConfig extends Config {
 
     @ConfigItem(
             keyName = "friendsChatNameColor",
-            name = "Friends Chat Name Color",
-            description = "Configures the player name color for friends chat.",
+            name = "Name Color",
+            description = "Configures the player name color for the Friends Chat tab.",
             section = friendsChatSection,
             position = 2
     )
@@ -549,8 +573,8 @@ public interface ChatPanelConfig extends Config {
 
     @ConfigItem(
             keyName = "friendsChatTimestampColor",
-            name = "Friends Chat Timestamp Color",
-            description = "Configures the timestamp color for friends chat.",
+            name = "Timestamp Color",
+            description = "Configures the timestamp color for Friends Chat tab.",
             section = friendsChatSection,
             position = 2
     )
@@ -559,17 +583,41 @@ public interface ChatPanelConfig extends Config {
         return friendsChatColor();
     }
 
+    @ConfigItem(
+            keyName = "friendsChatGroupNameColor",
+            name = "FC Name Color",
+            description = "Configures the color of the FC name in the Friends Chat tab.",
+            section = friendsChatSection,
+            position = 3
+    )
+    default Color friendsChatGroupNameColor()
+    {
+        return friendsChatColor();
+    }
+
     @Range(min = 5, max = 200)
     @ConfigItem(
             keyName = "friendsChatFontSize",
-            name = "Friends Chat Font Size",
-            description = "Configures the font size of the Friends Chat messages.",
+            name = "Font Size",
+            description = "Configures the font size of the Friends Chat tab.",
             section = friendsChatSection,
             position = 3
     )
     default int friendsChatFontSize()
     {
         return 10;
+    }
+
+    @ConfigItem(
+            keyName = "displayFCName",
+            name = "Show FC Name",
+            description = "Adds the FC name to all FC messages, including other tabs.",
+            section = friendsChatSection,
+            position = 8
+    )
+    default boolean showFCName()
+    {
+        return false;
     }
 
     @ConfigItem(
@@ -681,6 +729,18 @@ public interface ChatPanelConfig extends Config {
         return allChatColor();
     }
 
+    @ConfigItem(
+            keyName = "allChatGroupNameColor",
+            name = "Group Name Color",
+            description = "Configures the color of the Clan/FC name in the All tab.",
+            section = allChatSection,
+            position = 2
+    )
+    default Color allChatGroupNameColor()
+    {
+        return allChatColor();
+    }
+
     @Range(min = 5, max = 200)
     @ConfigItem(
             keyName = "allChatFontSize",
@@ -754,13 +814,25 @@ public interface ChatPanelConfig extends Config {
         return customChatColor();
     }
 
+    @ConfigItem(
+            keyName = "customChatGroupNameColor",
+            name = "Group Name Color",
+            description = "Configures the color of the Clan/FC name in the Custom tab.",
+            section = customChatSection,
+            position = 4
+    )
+    default Color customChatGroupNameColor()
+    {
+        return customChatColor();
+    }
+
     @Range(min = 5, max = 200)
     @ConfigItem(
             keyName = "customChatFontSize",
             name = "Font Size",
             description = "Configures the font size.",
             section = customChatSection,
-            position = 4
+            position = 5
     )
     default int customChatFontSize()
     {
@@ -839,13 +911,25 @@ public interface ChatPanelConfig extends Config {
         return custom2ChatColor();
     }
 
+    @ConfigItem(
+            keyName = "custom2ChatGroupNameColor",
+            name = "Group Name Color",
+            description = "Configures the color of the Clan/FC name in the Custom tab.",
+            section = custom2ChatSection,
+            position = 4
+    )
+    default Color custom2ChatGroupNameColor()
+    {
+        return custom2ChatColor();
+    }
+
     @Range(min = 5, max = 200)
     @ConfigItem(
             keyName = "custom2ChatFontSize",
             name = "Font Size",
             description = "Configures the font size.",
             section = custom2ChatSection,
-            position = 4
+            position = 5
     )
     default int custom2ChatFontSize()
     {
@@ -924,13 +1008,25 @@ public interface ChatPanelConfig extends Config {
         return custom3ChatColor();
     }
 
+    @ConfigItem(
+            keyName = "custom3ChatGroupNameColor",
+            name = "Group Name Color",
+            description = "Configures the color of the Clan/FC name in the Custom tab.",
+            section = custom3ChatSection,
+            position = 4
+    )
+    default Color custom3ChatGroupNameColor()
+    {
+        return custom3ChatColor();
+    }
+
     @Range(min = 5, max = 200)
     @ConfigItem(
             keyName = "custom3ChatFontSize",
             name = "Font Size",
             description = "Configures the font size.",
             section = custom3ChatSection,
-            position = 4
+            position = 5
     )
     default int custom3ChatFontSize()
     {
@@ -2961,11 +3057,23 @@ public interface ChatPanelConfig extends Config {
     }
 
     @ConfigItem(
+            keyName = "OverrideGroupNameColor",
+            name = "Override Group Name Color",
+            description = "Use message type color for the group name.",
+            section = eventSection,
+            position = 1
+    )
+    default boolean OverrideGroupNameColor()
+    {
+        return false;
+    }
+
+    @ConfigItem(
             keyName = "broadcastColor",
             name = "Broadcast",
             description = "Configures the text color for broadcast messages.",
             section = eventSection,
-            position = 1
+            position = 2
     )
     default Color broadcastColor() {
         return null;
