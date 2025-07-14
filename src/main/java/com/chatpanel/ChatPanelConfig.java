@@ -1154,6 +1154,18 @@ public interface ChatPanelConfig extends Config {
         return false;
     }
 
+    @ConfigItem(
+            keyName = "legacyCombat",
+            name = "Legacy Combat Messages",
+            description = "Displays combat messages in the old style (pre 2.3).<br> <span style='color:#00FFFF'>Guard was hit for: 0 </span> instead of <span style='color:#00FFFF'>Guard blocked</span>.<br>  <span style='color:red'>Important!</span> If you prefer the old style please let me know on the Chat Panel Discord or Github, <span style='color:red'>I plan to remove this option otherwise.</span>",
+            section = combatSection,
+            position = 20
+    )
+    default boolean legacyCombat()
+    {
+        return false;
+    }
+
     @Range(max = 10)
     @ConfigItem(
             keyName = "lineSpacing",
@@ -3181,11 +3193,77 @@ public interface ChatPanelConfig extends Config {
     @ConfigItem(
             keyName = "combatColor",
             name = "Combat",
-            description = "Configures the text color for combat messages.",
+            description = "Configures the text color for all combat messages, before other combat type recoloring.",
             section = eventSection,
             position = 11
     )
     default Color combatColor() {
+        return null;
+    }
+
+    @ConfigItem(
+            keyName = "combatBlockColor",
+            name = "Combat - Block",
+            description = "Configures the color for Block and Miss (0 damage) combat messages.",
+            section = eventSection,
+            position = 11
+    )
+    default Color combatBlockColor() {
+        return null;
+    }
+
+    @ConfigItem(
+            keyName = "combatPoisonColor",
+            name = "Combat - Poison",
+            description = "Configures the color for Poison, Venom, and Disease combat messages.",
+            section = eventSection,
+            position = 11
+    )
+    default Color combatPoisonColor() {
+        return null;
+    }
+
+    @ConfigItem(
+            keyName = "combatMaxColor",
+            name = "Combat - Max Hit",
+            description = "Configures the color for Max Hit combat messages.",
+            section = eventSection,
+            position = 11
+    )
+    default Color combatMaxColor() {
+        return null;
+    }
+
+    @ConfigItem(
+            keyName = "combatHealColor",
+            name = "Combat - Heal",
+            description = "Configures the color for Heal and Sanity_Restore combat messages. (Not food healing, like Soulreaper healing)",
+            section = eventSection,
+            position = 11
+    )
+    default Color combatHealColor() {
+        return null;
+    }
+
+    @ConfigItem(
+            keyName = "combatDrainColor",
+            name = "Combat - Drain",
+            description = "Configures the color for Corruption, Prayer_Drain, Sanity_Drain, and Doom combat messages.",
+            section = eventSection,
+            position = 11
+    )
+    default Color combatDrainColor() {
+        return null;
+    }
+
+    @ConfigItem(
+            keyName = "combatDotColor",
+            name = "Combat - Burn",
+            description = "Configures the color for Burn and Bleed combat messages.",
+            section = eventSection,
+            position = 11
+    )
+    default Color combatBurnColor() {
         return null;
     }
 

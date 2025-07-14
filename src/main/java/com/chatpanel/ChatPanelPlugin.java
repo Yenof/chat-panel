@@ -586,15 +586,66 @@ public class ChatPanelPlugin extends Plugin
             String defenderName = attacker.getName();
             String attackerName = (defender != null) ? defender.getName() : attacker.getName();
             Hitsplat hitsplat = hitsplatApplied.getHitsplat();
+            int hitsplatType = hitsplat.getHitsplatType();
             if (hitsplat.getAmount() == 0 && config.hidezerodamageHitsplats()) {
                 return;
             }
+            String adjective = "hit";
+
             int damageAmount = hitsplat.getAmount();
+            String eventName;
+               if (hitsplatType == 4 || hitsplatType == 5 || hitsplatType == 65) {
+                    eventName = "COMBAT_POISON";
+                    switch (hitsplatType){
+                        case 65:
+                            adjective = "poisoned";
+                            break;
+                        case 5:
+                            adjective = "venomed";
+                            break;
+                        case 4:
+                            adjective = "diseased";
+                            break;
+                    }
+                } else if (hitsplatType == 43 || hitsplatType == 44 || hitsplatType == 45 || hitsplatType == 46 || hitsplatType == 47 || hitsplatType == 55) {
+                    eventName = "COMBAT_MAX";
+                    adjective = "critical hit";
+                } else if (hitsplatType == 6 || hitsplatType == 72) {
+                    eventName = "COMBAT_HEAL";
+                    adjective = hitsplatType == 6 ? "healed" : "sanity restored";
+                } else if (hitsplatType == 0 || hitsplatType == 60 || hitsplatType == 71 || hitsplatType == 73 ) {
+                    eventName = "COMBAT_DRAIN";
+                    switch (hitsplatType){
+                        case 0:
+                            adjective = "corrupted";
+                            break;
+                        case 60:
+                            adjective = "prayer drained";
+                            break;
+                        case 71:
+                            adjective = "sanity drained";
+                            break;
+                        case 73:
+                            adjective = "doomed";
+                    }
+                } else if (hitsplatType == 67 || hitsplatType == 74) {
+                    eventName = "COMBAT_BURN";
+                    adjective = hitsplatType == 74 ?  "burned" : "bled";
+                } else {
+                    eventName = "COMBAT";
+                    adjective = "hit";
+                }
             String identifier = "Combat";
-            String eventName = "COMBAT";
             String timestamp = getCurrentTimestamp();
-            String combatMessage = (defender == null) ? defenderName + " was hit for: " + damageAmount
-                    : attackerName + " hit " + defenderName + " for: " + damageAmount;
+            String combatMessage = (defender == null) ? defenderName  + " " + (adjective.equals("bled") ? "" : "was ") + adjective +  " for: " +damageAmount
+                    : attackerName + " " + adjective + " " + defenderName + " for: " + damageAmount;
+            if (hitsplatType == 12 || hitsplatType == 13) {
+                    eventName = "COMBAT_BLOCK";
+                    combatMessage = (defender != null) ? defenderName + " blocked " + attackerName : attackerName + " blocked";
+                }
+            if (config.legacyCombat()){
+                    combatMessage = (defender == null) ? defenderName + " was hit for: " + damageAmount : attackerName + " hit " + defenderName + " for: " + damageAmount;
+            }
             if (config.showCombatTab()) {
             chatPanelSidebar.addCombatMessage(timestamp, (config.identifierC()) ? "Combat" : "", combatMessage, eventName);
             }

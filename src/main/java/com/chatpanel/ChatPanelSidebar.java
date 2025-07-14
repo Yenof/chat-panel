@@ -1015,6 +1015,24 @@ public class ChatPanelSidebar extends PluginPanel {
             case "COMBAT":
                 color = config.combatColor();
                 break;
+            case "COMBAT_BLOCK":
+                color = config.combatBlockColor() != null ? config.combatBlockColor() : config.combatColor();
+                break;
+            case "COMBAT_BURN":
+                color = config.combatBurnColor() != null ? config.combatBurnColor() : config.combatColor();
+                break;
+            case "COMBAT_DRAIN":
+                color = config.combatDrainColor() != null ? config.combatDrainColor() : config.combatColor();
+                break;
+            case "COMBAT_HEAL":
+                color = config.combatHealColor() != null ? config.combatHealColor() : config.combatColor();;
+                break;
+            case "COMBAT_MAX":
+                color = config.combatMaxColor() != null ? config.combatMaxColor() : config.combatColor();
+                break;
+            case "COMBAT_POISON":
+                color = config.combatPoisonColor() != null ? config.combatPoisonColor() : config.combatColor();;
+                break;
             case "CONSOLE":
                 color = config.consoleColor();
                 break;
