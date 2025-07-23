@@ -49,17 +49,7 @@ public class ChatPanelPlugin extends Plugin
     {
         chatPanelSidebar = new ChatPanelSidebar(config, client);
         if (!config.hideSidebarIcon()) {
-            final BufferedImage icon = ImageUtil.loadImageResource(getClass(), "/ChatPanelimg.png");
-
-            navButton = NavigationButton.builder()
-                    .tooltip("Chat Panel")
-                    .icon(icon)
-                    .priority(config.iconPosition())
-                    .panel(chatPanelSidebar)
-                    .build();
-
-            clientToolbar.addNavigation(navButton);
-            displayUpdateMessage();
+            navBuilder();
         }
     }
 
@@ -69,6 +59,18 @@ public class ChatPanelPlugin extends Plugin
         if (navButton != null){
         clientToolbar.removeNavigation(navButton);}
         chatPanelSidebar.closePopout();
+    }
+
+    private void navBuilder (){
+        final BufferedImage icon = ImageUtil.loadImageResource(getClass(), "/ChatPanelimg.png");
+        navButton = NavigationButton.builder()
+                .tooltip("Chat Panel")
+                .icon(icon)
+                .priority(config.iconPosition())
+                .panel(chatPanelSidebar)
+                .build();
+        clientToolbar.addNavigation(navButton);
+        displayUpdateMessage();
     }
 
     private static final double CURRENT_VERSION = 2.2;
@@ -800,6 +802,9 @@ public class ChatPanelPlugin extends Plugin
                 }
                 chatPanelSidebar.reloadPlugin();
             }
+            if (event.getKey().startsWith("Custom") && event.getKey().contains("tab")) {
+                chatPanelSidebar.reloadPlugin();
+            }
             if (event.getKey().startsWith("font") || event.getKey().endsWith("FontSize") || event.getKey().equals("tabFonts")) {
                 chatPanelSidebar.updateFonts();
             }
@@ -807,6 +812,25 @@ public class ChatPanelPlugin extends Plugin
                 chatPanelSidebar.fontLoadErrorShown = false;
                 chatPanelSidebar.updateFonts();
                 chatPanelSidebar.fontLoadErrorShown = true;
+            } if (event.getKey().equals("AutoPop") && config.AutoPop() && !chatPanelSidebar.isPopout()) {
+                chatPanelSidebar.togglePopout();
+            } if (event.getKey().equals("hidePopoutIcon")) {
+                if (!config.hidePopoutIcon()) {
+                    chatPanelSidebar.popoutFrame.setIconImage(ImageUtil.loadImageResource(getClass(), "/ChatPanelimg.png"));
+                } else {
+                    chatPanelSidebar.popoutFrame.setIconImage(null);
+                }
+            } if (event.getKey().equals("DisablePopOut")) {
+                chatPanelSidebar.refreshPopout();
+            } if (event.getKey().equals("hideSidebarIcon")) {
+                if (config.hideSidebarIcon()) {
+                    clientToolbar.removeNavigation(navButton);
+                } else {
+                    navBuilder();
+                }
+            } if (event.getKey().equals("iconPosition") && !config.hideSidebarIcon()) {
+                clientToolbar.removeNavigation(navButton);
+                navBuilder();
             } else {
                 chatPanelSidebar.updateChatStyles();
                 if (chatPanelSidebar.isPopout()) {
@@ -815,7 +839,7 @@ public class ChatPanelPlugin extends Plugin
             }
             if (event.getKey().startsWith("hideSidebar")) {
                 if (config.hideSidebarIcon()) {
-                    String message = "<html>Hide Sidebar Icon enabled.<br> Turn plugin off/on with Auto-pop out window enabled to spawn a Chat Panel.</html>";
+                    String message = "<html>Hide Sidebar Icon enabled.<br> Turn plugin off/on with Auto-Pop Out Window enabled to spawn a Chat Panel.</html>";
                     JOptionPane.showMessageDialog(null, message, "Notice", JOptionPane.WARNING_MESSAGE);
                 }
             }

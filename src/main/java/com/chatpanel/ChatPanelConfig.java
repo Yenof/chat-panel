@@ -281,7 +281,7 @@ public interface ChatPanelConfig extends Config {
     @ConfigItem(
             keyName = "iconPosition",
             name = "Icon Position",
-            description = "Set the priority for the sidebar icon's position. (Requires plugin restart)",
+            description = "Set the priority for the sidebar icon's position.",
             position = 2,
             section = extrasSection
     )
@@ -293,7 +293,7 @@ public interface ChatPanelConfig extends Config {
     @ConfigItem(
             keyName = "hideSidebarIcon",
             name = "Hide Sidebar Icon",
-            description = "ONLY use with Auto-Pop out and if you REALLY don't want a sidebar icon. Toggle plugin on/off to restore pop out window if closed. (Requires plugin restart)",
+            description = "ONLY use with Auto-Pop out and if you REALLY don't want a sidebar icon. Toggle plugin on/off to restore pop out window if closed.",
             section = extrasSection,
             position = 3
     )
@@ -757,7 +757,7 @@ public interface ChatPanelConfig extends Config {
     @ConfigItem(
             keyName = "Customtab1",
             name = "Name of Tab",
-            description = "Configures the display name of the tab. (Requires plugin restart, or hide & show tab)",
+            description = "Configures the display name of the tab.",
             section = customChatSection,
             position = 0
     )
@@ -854,7 +854,7 @@ public interface ChatPanelConfig extends Config {
     @ConfigItem(
             keyName = "Custom2tab",
             name = "Name of Tab",
-            description = "Configures the display name of the tab. (Requires plugin restart, or hide & show tab)",
+            description = "Configures the display name of the tab.",
             section = custom2ChatSection,
             position = 0
     )
@@ -951,7 +951,7 @@ public interface ChatPanelConfig extends Config {
     @ConfigItem(
             keyName = "Custom3tab",
             name = "Name of Tab",
-            description = "Configures the display name of the tab. (Requires plugin restart, or hide & show tab)",
+            description = "Configures the display name of the tab.",
             section = custom3ChatSection,
             position = 0
     )
@@ -1255,7 +1255,7 @@ public interface ChatPanelConfig extends Config {
     @ConfigItem(
             keyName = "DisablePopOut",
             name = "Hide Pop Out/Pop In Buttons",
-            description = "Hides pop out button and pop in button, except in empty side panel. (Requires plugin restart)",
+            description = "Hides pop out button and pop in button, except in empty side panel.",
             position = 5,
             section = extrasSection
     )
@@ -1527,7 +1527,7 @@ public interface ChatPanelConfig extends Config {
     @ConfigItem(
             keyName = "hidePopoutIcon",
             name = "Hide Title Bar Icon",
-            description = "Removes the icon from the title bar of the pop out windows, if they have one. Pop in and out to apply.",
+            description = "Removes the icon from the title bar of the pop out windows, if they have one.",
             section = extrasSection,
             position = 4
     )

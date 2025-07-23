@@ -47,7 +47,7 @@ public class ChatPanelSidebar extends PluginPanel {
     private final ChatPanelConfig config;
     private static final Logger logger = LoggerFactory.getLogger(ChatPanelSidebar.class);
     private boolean isPopout = false;
-    private JFrame popoutFrame;
+    JFrame popoutFrame;
     private JFrame popoutTab;
     private JButton popoutButton;
     private JButton popinButton;
@@ -62,10 +62,10 @@ public class ChatPanelSidebar extends PluginPanel {
         this.config = config;
         this.client = client;
         setLayout(new BorderLayout());
+        popoutButton = new JButton("Pop out");
+        popoutButton.addActionListener(e -> togglePopout());
         if (!config.hidepopoutButtons()) {
-            popoutButton = new JButton("Pop out");
             popoutButton.setVisible(true);
-            popoutButton.addActionListener(e -> togglePopout());
             add(popoutButton, BorderLayout.SOUTH);
         }
 
@@ -431,8 +431,15 @@ public class ChatPanelSidebar extends PluginPanel {
             chatArea.setText("");
         }
     }
+    private static final int COOLDOWN = 100;
 
-    private void togglePopout() {
+    private final Timer positionCoolDown = new Timer(COOLDOWN, e -> {
+        savePopoutBounds();
+    });
+    {
+        positionCoolDown.setRepeats(false);
+    }
+    void togglePopout() {
         if (isPopout) {
             // Restore to side panel
             isPopout = false;
@@ -528,14 +535,15 @@ public class ChatPanelSidebar extends PluginPanel {
             popoutFrame.addComponentListener(new ComponentAdapter() {
                 @Override
                 public void componentMoved(ComponentEvent e) {
-                    if (config.rememberPopoutPosition()) {
-                        savePopoutBounds();
-                    }
+                    savePopoutBounds();
                 }
                 @Override
                 public void componentResized(ComponentEvent e) {
+                    savePopoutBounds();
+                }
+                private void savePopoutBounds() {
                     if (config.rememberPopoutPosition()) {
-                        savePopoutBounds();
+                        positionCoolDown.restart();
                     }
                 }
             });
@@ -705,6 +713,36 @@ public class ChatPanelSidebar extends PluginPanel {
             popoutFrame.dispose();
         }
         isPopout = false;
+    }
+    public void refreshPopout() {
+        if (!config.hidepopoutButtons()) {
+            if (popinButton == null && popoutFrame != null) {
+                popinButton = new JButton("Pop In");
+                popinButton.addActionListener(e -> togglePopout());
+                popoutFrame.add(popinButton, BorderLayout.SOUTH);
+                popinButton.setVisible(true);
+
+            }
+            popoutButton = new JButton("Pop Out");
+            popoutButton.addActionListener(e -> togglePopout());
+            add(popoutButton, BorderLayout.SOUTH);
+            popoutButton.setVisible(true);
+
+        } else {
+            if (popinButton != null) {
+                popoutFrame.remove(popinButton);
+                popinButton = null;
+            }
+            if (popoutButton != null) {
+                remove(popoutButton);
+                popoutButton.setVisible(false);
+            }
+        }
+        if (popoutFrame != null){
+            popoutFrame.revalidate();
+            popoutFrame.repaint();
+        }
+
     }
 
     //Wrap editor is to mimic wrapping that was in JTextArea, before switching to JTextPane. smh, must be a better way.
