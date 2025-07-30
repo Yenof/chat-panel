@@ -2,8 +2,11 @@ package com.chatpanel;
 
 import net.runelite.api.Client;
 import net.runelite.client.RuneLite;
+import net.runelite.client.config.ChatColorConfig;
 import net.runelite.client.ui.ColorScheme;
 import net.runelite.client.ui.PluginPanel;
+
+import javax.inject.Inject;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
@@ -57,10 +60,13 @@ public class ChatPanelSidebar extends PluginPanel {
     private Timer autoPopTimer;
     private final List<JFrame> popoutTabs = new ArrayList<>();
     private final Client client;
+    @Inject
+    private final ChatColorConfig chatColorConfig;
 
-    public ChatPanelSidebar(ChatPanelConfig config, Client client) {
+    public ChatPanelSidebar(ChatPanelConfig config, Client client, ChatColorConfig chatColorConfig) {
         this.config = config;
         this.client = client;
+        this.chatColorConfig = chatColorConfig;
         setLayout(new BorderLayout());
         popoutButton = new JButton("Pop out");
         popoutButton.addActionListener(e -> togglePopout());
@@ -459,14 +465,13 @@ public class ChatPanelSidebar extends PluginPanel {
                     return overrideUndecorated || super.isUndecorated();
                 }
             };
-            if (popoutFrame.isUndecorated()){
-                popoutFrame.setIconImage(null);
+
+            if (!config.hidePopoutIcon()){
+                popoutFrame.setIconImage(ImageUtil.loadImageResource(getClass(), "/ChatPanelimg.png"));
+            } else if (!popoutFrame.isUndecorated()){
+            popoutFrame.setIconImage(new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB));
             } else {
-                if (!config.hidePopoutIcon()){
-                    popoutFrame.setIconImage(ImageUtil.loadImageResource(getClass(), "/ChatPanelimg.png"));
-                } else {
-                popoutFrame.setIconImage(new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB));
-                }
+                popoutFrame.setIconImage(null);
             }
 
             boolean appliedSize = false;
@@ -564,15 +569,15 @@ public class ChatPanelSidebar extends PluginPanel {
                     return overrideUndecorated || super.isUndecorated();
                 }
             };
-            if (popoutTab.isUndecorated()){
-                popoutTab.setIconImage(null);
+
+            if (!config.hidePopoutIcon()){
+                popoutTab.setIconImage(ImageUtil.loadImageResource(getClass(), "/ChatPanelimg.png"));
+            } else  if (!popoutTab.isUndecorated()){
+                popoutTab.setIconImage(new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB));
             } else {
-                if (!config.hidePopoutIcon()){
-                    popoutTab.setIconImage(ImageUtil.loadImageResource(getClass(), "/ChatPanelimg.png"));
-                } else {
-                    popoutTab.setIconImage(new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB));
-                }
+                popoutTab.setIconImage(null);
             }
+
             popoutTab.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             popoutTab.setAlwaysOnTop(config.popoutAlwaysOnTop());
             popoutTab.addWindowListener(new WindowAdapter() {
@@ -715,6 +720,7 @@ public class ChatPanelSidebar extends PluginPanel {
         isPopout = false;
     }
     public void refreshPopout() {
+        SwingUtilities.invokeLater(() -> {
         if (!config.hidepopoutButtons()) {
             if (popinButton == null && popoutFrame != null) {
                 popinButton = new JButton("Pop In");
@@ -741,8 +747,7 @@ public class ChatPanelSidebar extends PluginPanel {
         if (popoutFrame != null){
             popoutFrame.revalidate();
             popoutFrame.repaint();
-        }
-
+        }});
     }
 
     //Wrap editor is to mimic wrapping that was in JTextArea, before switching to JTextPane. smh, must be a better way.
@@ -923,7 +928,7 @@ public class ChatPanelSidebar extends PluginPanel {
                 String message = "The Custom Font file is empty. \nTo use a Custom Font place a .ttf or .otf file named customfont.ttf into:\n /.runelite/chat-panel/\nFor more info, right click 'Chat Panel', then click 'Support'.";
                 String[] options = {"Open Location", "OK"};
                 fontLoadErrorShown = true;
-                int choice = JOptionPane.showOptionDialog(null, message, "Empty Font File", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
+                int choice = JOptionPane.showOptionDialog(client.getCanvas(), message, "Empty Font File", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
                 if (choice == 0) {
                     openDIR();
                 }
@@ -939,7 +944,7 @@ public class ChatPanelSidebar extends PluginPanel {
                 if (!fontLoadErrorShown) {
                     String message = "Error loading custom font, some fonts don't work.  :( \nHere is the error message that was created:\n" + e.getMessage();
                     String[] options = {"Open Location", "OK"};
-                    int choice = JOptionPane.showOptionDialog(null, message, "Font Loading Error", JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE, null, options, options[0]);
+                    int choice = JOptionPane.showOptionDialog(client.getCanvas(), message, "Font Loading Error", JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE, null, options, options[0]);
                     fontLoadErrorShown = true;
                     if (choice == 0) {
                         openDIR();
@@ -969,10 +974,10 @@ public class ChatPanelSidebar extends PluginPanel {
                 Desktop desktop = Desktop.getDesktop();
                 desktop.open(CUSTOM_FONT_FILE.getParentFile());
             } catch (IOException e) {
-                JOptionPane.showMessageDialog(null, "Error opening file browser \nHere is the error message that was created:\n" + e.getMessage(), "Unknown Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(client.getCanvas(), "Error opening file browser \nHere is the error message that was created:\n" + e.getMessage(), "Unknown Error", JOptionPane.ERROR_MESSAGE);
             }
         } else {
-            JOptionPane.showMessageDialog(null, "The Chat Panel directory can't be found in /.runelite/\nThis might be caused by a permission issue.\nYou can try creating the /.runelite/chat-panel/ directory manually.", "Directory Not Found", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(client.getCanvas(), "The Chat Panel directory can't be found in /.runelite/\nThis might be caused by a permission issue.\nYou can try creating the /.runelite/chat-panel/ directory manually.", "Directory Not Found", JOptionPane.ERROR_MESSAGE);
             fontLoadErrorShown = true;
         }
     }
@@ -1321,16 +1326,102 @@ public class ChatPanelSidebar extends PluginPanel {
         }
         Pattern pattern = Pattern.compile((partialMatching? "" : "\\b") + "(" + String.join("|", highlightWordsList) + ")" + (partialMatching? "" : "\\b"), Pattern.CASE_INSENSITIVE);
         Matcher matcher = pattern.matcher(message);
-        int start = 0;
         while (matcher.find()) {
             String matchedWord = matcher.group();
             int startIndex = doc.getLength() - message.length() + matcher.start();
-            int endIndex = startIndex + matchedWord.length();
             SimpleAttributeSet highlightAttrs = new SimpleAttributeSet();
             StyleConstants.setForeground(highlightAttrs, highlightColor);
             doc.setCharacterAttributes(startIndex, matchedWord.length(), highlightAttrs, false);
         }
     }
+    private Color runeLiteColors(String eventName)
+    {
+        switch (eventName)
+        {
+            case "PUBLICCHAT":
+            case "MODCHAT":
+                return chatColorConfig.transparentPublicChatHighlight();
+            case "PRIVATECHATOUT":
+                return chatColorConfig.transparentPrivateMessageSentHighlight();
+            case "PRIVATECHAT":
+            case "MODPRIVATECHAT":
+                return chatColorConfig.transparentPrivateMessageReceivedHighlight();
+            case "FRIENDSCHATNOTIFICATION":
+                return chatColorConfig.transparentFriendsChatInfoHighlight();
+            case "FRIENDSCHAT":
+                return chatColorConfig.transparentFriendsChatMessageHighlight();
+            case "CLAN_GIM_MESSAGE":
+            case "CLAN_MESSAGE":
+                return chatColorConfig.transparentClanChatInfoHighlight();
+            case "CLAN_CHAT":
+            case "CLAN_GIM_CHAT":
+                return chatColorConfig.transparentClanChatMessageHighlight();
+            case "CLAN_GUEST_MESSAGE":
+                return chatColorConfig.transparentClanChatGuestInfoHighlight();
+            case "CLAN_GUEST_CHAT":
+                return chatColorConfig.transparentClanChatGuestMessageHighlight();
+            case "TRADEREQ":
+                return chatColorConfig.transparentTradeChatMessageHighlight();
+            case "GAMEMESSAGE":
+            case "ENGINE":
+                return chatColorConfig.transparentServerMessageHighlight();
+            case "CONSOLE":
+                return chatColorConfig.transparentGameMessageHighlight();
+            case "ITEM_EXAMINE":
+            case "OBJECT_EXAMINE":
+            case "NPC_EXAMINE":
+                return chatColorConfig.transparentExamineHighlight();
+            case "SPAM":
+                return chatColorConfig.transparentFilteredHighlight();
+            default:
+            return Color.GREEN;
+        }
+    }
+
+    private void inheritColors(String rawMessage, StyledDocument doc, boolean isOddLine, Color baseColor, String eventName) throws BadLocationException {
+        Color normalColor = isOddLine ? adjustColor(baseColor, config.chatColorOffset()) : baseColor;
+        Color inheritedColor = runeLiteColors(eventName) != null ? runeLiteColors(eventName): normalColor;
+        Color inheritedOdd = isOddLine ? adjustColor(inheritedColor, config.chatColorOffset()) : inheritedColor;
+        Color color = normalColor;
+
+        int last = 0;
+        Pattern pattern = Pattern.compile("(?i)<col(?:=)?([a-z0-9#]+)>|</col>");
+        Matcher matcher = pattern.matcher(rawMessage);
+
+        while (matcher.find()) {
+            if (matcher.start() > last) {
+                SimpleAttributeSet attrs = new SimpleAttributeSet();
+                StyleConstants.setForeground(attrs, color);
+                doc.insertString(doc.getLength(), rawMessage.substring(last, matcher.start()), attrs);
+            }
+            String tag = matcher.group(1);
+            if (tag == null) {
+                color = normalColor;
+            } else {
+                if (config.runeLiteHighlights()) {
+                    if (tag.equals("NORMAL")) {
+                        color = normalColor;
+                    } else if (tag.equals("HIGHLIGHT")) {
+                        color = inheritedOdd;
+                    }
+                }
+                if (config.gameHighlights() && !tag.equals("HIGHLIGHT") && !tag.equals("NORMAL")) {
+                    try {
+                        color = Color.decode("#" + tag);
+                    } catch (NumberFormatException e) {
+                        color = baseColor;
+                    }
+                }
+            }
+            last = matcher.end();
+        }
+        if (last < rawMessage.length()) {
+            SimpleAttributeSet attrs = new SimpleAttributeSet();
+            StyleConstants.setForeground(attrs, color);
+            doc.insertString(doc.getLength(), rawMessage.substring(last), attrs);
+        }
+    }
+
 
     private void setScrollPaneSizes() {
         if (tabbedPane.getTabCount() > 0) {
@@ -1396,43 +1487,36 @@ public class ChatPanelSidebar extends PluginPanel {
     }
 
     public void addClanChatMessage(String timestamp, String name, String cleanedMessage, String eventName) {
-        cleanedMessage = filterAllChatMessage(cleanedMessage);
         addMessageToChatArea(clanChatArea, timestamp, name, cleanedMessage, eventName);
         notifier("Clan");
     }
 
     public void addFriendsChatMessage(String timestamp, String name, String cleanedMessage, String eventName) {
-        cleanedMessage = filterAllChatMessage(cleanedMessage);
         addMessageToChatArea(friendsChatArea, timestamp, name, cleanedMessage, eventName);
         notifier("Friends");
     }
 
     public void addAllChatMessage(String timestamp, String cleanedName, String cleanedMessage, String eventName) {
-        cleanedMessage = filterAllChatMessage(cleanedMessage);
         addMessageToChatArea(allChatArea, timestamp, cleanedName, cleanedMessage, eventName);
         notifier("All");
     }
 
     public void addCustomChatMessage(String timestamp, String cleanedName, String cleanedMessage, String eventName) {
-        cleanedMessage = filterAllChatMessage(cleanedMessage);
         addMessageToChatArea(customChatArea, timestamp, cleanedName, cleanedMessage, eventName);
         notifier("Custom1");
     }
 
     public void addCustom2ChatMessage(String timestamp, String cleanedName, String cleanedMessage, String eventName) {
-        cleanedMessage = filterAllChatMessage(cleanedMessage);
         addMessageToChatArea(customChatArea2, timestamp, cleanedName, cleanedMessage, eventName);
         notifier("Custom2");
     }
 
     public void addCustom3ChatMessage(String timestamp, String cleanedName, String cleanedMessage, String eventName) {
-        cleanedMessage = filterAllChatMessage(cleanedMessage);
         addMessageToChatArea(customChatArea3, timestamp, cleanedName, cleanedMessage, eventName);
         notifier("Custom3");
     }
 
     public void addGameChatMessage(String timestamp, String cleanedName, String cleanedMessage, String eventName) {
-        cleanedMessage = filterAllChatMessage(cleanedMessage);
         addMessageToChatArea(gameChatArea, timestamp, cleanedName, cleanedMessage, eventName);
         notifier("Game");
     }
@@ -1475,7 +1559,7 @@ public class ChatPanelSidebar extends PluginPanel {
                 }
             }
 
-            final String filteredMessage = tempMessage[0];
+            String filteredMessage = tempMessage[0];
 
             Color baseColor = getColorForCase(eventName, chatArea);
             int lineCount = doc.getDefaultRootElement().getElementCount();
@@ -1526,7 +1610,12 @@ public class ChatPanelSidebar extends PluginPanel {
                         StyleConstants.setForeground(charAttrs, randomColor);
                         doc.insertString(doc.getLength(), String.valueOf(c), charAttrs);
                     }
+                } else if (config.gameHighlights() || config.runeLiteHighlights()){
+                    inheritColors(filteredMessage, doc, isOddLine, baseColor, eventName);
+                    filteredMessage = filterAllChatMessage(message);
                 } else {
+                    filteredMessage = filterAllChatMessage(message);
+
                     SimpleAttributeSet messageAttrs = new SimpleAttributeSet();
                     Color messageColor = isOddLine ? adjustColor(baseColor, config.chatColorOffset()) : baseColor;
                     StyleConstants.setForeground(messageAttrs, messageColor);

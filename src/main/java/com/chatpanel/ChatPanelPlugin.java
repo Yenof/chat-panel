@@ -5,10 +5,12 @@ import net.runelite.api.*;
 import net.runelite.api.events.ActorDeath;
 import net.runelite.api.events.ChatMessage;
 import net.runelite.api.events.HitsplatApplied;
+import net.runelite.client.config.ChatColorConfig;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
+import net.runelite.client.plugins.PluginManager;
 import net.runelite.client.ui.ClientToolbar;
 import net.runelite.client.ui.NavigationButton;
 import net.runelite.client.util.ImageUtil;
@@ -37,7 +39,10 @@ public class ChatPanelPlugin extends Plugin
 
     private ChatPanelSidebar chatPanelSidebar;
     private NavigationButton navButton;
-
+    @Inject
+    private PluginManager pluginManager;
+    @Inject
+    private ChatColorConfig chatColorConfig;
     @Provides
     ChatPanelConfig provideConfig(ConfigManager configManager)
     {
@@ -45,16 +50,16 @@ public class ChatPanelPlugin extends Plugin
     }
 
     @Override
-    protected void startUp() throws Exception
+    protected void startUp()
     {
-        chatPanelSidebar = new ChatPanelSidebar(config, client);
+        chatPanelSidebar = new ChatPanelSidebar(config, client, chatColorConfig);
         if (!config.hideSidebarIcon()) {
             navBuilder();
         }
     }
 
     @Override
-    protected void shutDown() throws Exception
+    protected void shutDown()
     {
         if (navButton != null){
         clientToolbar.removeNavigation(navButton);}
@@ -790,7 +795,8 @@ public class ChatPanelPlugin extends Plugin
 
     @Subscribe
     public void onConfigChanged(ConfigChanged event) {
-        if ("chatpanel".equals(event.getGroup())) {
+        if ("chatpanel".equals(event.getGroup()) && pluginManager.isPluginEnabled(this)) {
+            SwingUtilities.invokeLater(() -> {
             if (event.getKey().startsWith("show")) {
                 chatPanelSidebar.reloadPlugin();
             }
@@ -812,23 +818,31 @@ public class ChatPanelPlugin extends Plugin
                 chatPanelSidebar.fontLoadErrorShown = false;
                 chatPanelSidebar.updateFonts();
                 chatPanelSidebar.fontLoadErrorShown = true;
-            } if (event.getKey().equals("AutoPop") && config.AutoPop() && !chatPanelSidebar.isPopout()) {
+            }
+            if (event.getKey().equals("AutoPop") && config.AutoPop() && !chatPanelSidebar.isPopout()) {
                 chatPanelSidebar.togglePopout();
-            } if (event.getKey().equals("hidePopoutIcon")) {
-                if (!config.hidePopoutIcon()) {
+            }
+            if (event.getKey().equals("hidePopoutIcon")) {
+                if (!config.hidePopoutIcon() && chatPanelSidebar.isPopout()) {
                     chatPanelSidebar.popoutFrame.setIconImage(ImageUtil.loadImageResource(getClass(), "/ChatPanelimg.png"));
-                } else {
-                    chatPanelSidebar.popoutFrame.setIconImage(null);
-                }
-            } if (event.getKey().equals("DisablePopOut")) {
+                } else if (config.hidePopoutIcon() && chatPanelSidebar.isPopout()) {
+                    if (chatPanelSidebar.popoutFrame.isUndecorated()){
+                        chatPanelSidebar.popoutFrame.setIconImage(null);
+                    } else {
+                        chatPanelSidebar.popoutFrame.setIconImage(new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB));}
+                    }
+            }
+            if (event.getKey().equals("DisablePopOut")) {
                 chatPanelSidebar.refreshPopout();
-            } if (event.getKey().equals("hideSidebarIcon")) {
-                if (config.hideSidebarIcon()) {
+            }
+            if (event.getKey().equals("hideSidebarIcon")) {
+                if (config.hideSidebarIcon() && navButton != null) {
                     clientToolbar.removeNavigation(navButton);
                 } else {
                     navBuilder();
                 }
-            } if (event.getKey().equals("iconPosition") && !config.hideSidebarIcon()) {
+            }
+            if (event.getKey().equals("iconPosition") && !config.hideSidebarIcon() && navButton != null) {
                 clientToolbar.removeNavigation(navButton);
                 navBuilder();
             } else {
@@ -840,13 +854,13 @@ public class ChatPanelPlugin extends Plugin
             if (event.getKey().startsWith("hideSidebar")) {
                 if (config.hideSidebarIcon()) {
                     String message = "<html>Hide Sidebar Icon enabled.<br> Turn plugin off/on with Auto-Pop Out Window enabled to spawn a Chat Panel.</html>";
-                    JOptionPane.showMessageDialog(null, message, "Notice", JOptionPane.WARNING_MESSAGE);
+                    JOptionPane.showMessageDialog(client.getCanvas(), message, "Notice", JOptionPane.WARNING_MESSAGE);
                 }
-            }
             }
             if (config.hideSidebarIcon() && !config.AutoPop()) {
                 String message = "<html>Warning: Hide Sidebar Icon is enabled but Auto-pop out window is not.<br>Enable Auto-pop out or disable Hide Sidebar Icon to access to Chat Panel.</html>";
-                JOptionPane.showMessageDialog(null, message, "Configuration Issue", JOptionPane.WARNING_MESSAGE);
-            }
+                JOptionPane.showMessageDialog(client.getCanvas(), message, "Configuration Issue", JOptionPane.WARNING_MESSAGE);
+            }});
         }
     }
+}

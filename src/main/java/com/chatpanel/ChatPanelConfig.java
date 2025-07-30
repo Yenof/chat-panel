@@ -277,7 +277,7 @@ public interface ChatPanelConfig extends Config {
         return 435;
     }
 
-    @Range(max = 50)
+    @Range(min = 1, max = 50) // Switching profiles with an icon at priority 0 causes errors.
     @ConfigItem(
             keyName = "iconPosition",
             name = "Icon Position",
@@ -1629,6 +1629,30 @@ public interface ChatPanelConfig extends Config {
             position = 12
     )
     default boolean PartialMatching()
+    {
+        return true;
+    }
+
+    @ConfigItem(
+            keyName = "gameHighlights",
+            name = "Game Highlights",
+            description = "Keeps text color highlights given by the game. (Olm orbs, Tempoross attacks)",
+            section = highlightingSection,
+            position = 13
+    )
+    default boolean gameHighlights()
+    {
+        return true;
+    }
+
+    @ConfigItem(
+            keyName = "runeLiteHighlights",
+            name = "RuneLite Highlights",
+            description = "Keeps text color highlights given by RuneLite. (GE Average<span style='color:yellow'> 92</span> HA value <span style='color:yellow'>2</span>)<br>Uses the colors from the Transparent section in the Chat Colors plugin.",
+            section = highlightingSection,
+            position = 13
+    )
+    default boolean runeLiteHighlights()
     {
         return true;
     }
