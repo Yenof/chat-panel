@@ -144,6 +144,12 @@ public class ChatPanelPlugin extends Plugin
                         chatPanelSidebar.privateChatNames.add(privateName); }
                     chatPanelSidebar.addPrivateChatMessage(timestamp, cleanedName, cleanedMessage, eventName);}
                 break;
+            case LOGINLOGOUTNOTIFICATION:
+                if ((config.showPrivateChat() || config.splitPMs()) && config.loginLogoutNotification()){
+                    cleanedName = "";
+                    chatPanelSidebar.addPrivateChatMessage(timestamp, cleanedName, cleanedMessage, eventName);
+                    break;
+                }
             case CLAN_CHAT:
             case CLAN_MESSAGE:
             case CLAN_GUEST_MESSAGE:
@@ -235,6 +241,17 @@ public class ChatPanelPlugin extends Plugin
                     chatPanelSidebar.addCustom2ChatMessage(timestamp, config.identifier2() ? identifier : cleanedName, cleanedMessage, eventName);
                 }
                 if (config.showCustom3Chat() && config.Custom3ModPrivateChatEnabled()) {
+                    chatPanelSidebar.addCustom3ChatMessage(timestamp, config.identifier3() ? identifier : cleanedName, cleanedMessage, eventName);
+                }
+                break;
+            case LOGINLOGOUTNOTIFICATION:
+                if (config.showCustomChat() && config.CustomLoginLogoutEnabled()) {
+                    chatPanelSidebar.addCustomChatMessage(timestamp, config.identifier1() ? identifier : cleanedName, cleanedMessage, eventName);
+                }
+                if (config.showCustom2Chat() && config.Custom2LoginLogoutEnabled()) {
+                    chatPanelSidebar.addCustom2ChatMessage(timestamp, config.identifier2() ? identifier : cleanedName, cleanedMessage, eventName);
+                }
+                if (config.showCustom3Chat() && config.Custom3LoginLogoutEnabled()) {
                     chatPanelSidebar.addCustom3ChatMessage(timestamp, config.identifier3() ? identifier : cleanedName, cleanedMessage, eventName);
                 }
                 break;
@@ -701,6 +718,8 @@ public class ChatPanelPlugin extends Plugin
                 return "Private - " + cleanedName;
             case MODPRIVATECHAT:
                 return "ModPrivate - " + cleanedName;
+            case LOGINLOGOUTNOTIFICATION:
+                return "Logged" + cleanedName;
             case CLAN_CHAT:
                 return "Clan - " + cleanedName;
             case CLAN_MESSAGE:

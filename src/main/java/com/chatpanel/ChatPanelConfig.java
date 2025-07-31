@@ -425,6 +425,19 @@ public interface ChatPanelConfig extends Config {
         return 14;
     }
 
+
+    @ConfigItem(
+            keyName = "loginLogoutNotification",
+            name = "Login/Logout Notification",
+            description = "Adds the login and logout notification for friends.",
+            section = privateChatSection,
+            position = 6
+    )
+    default boolean loginLogoutNotification()
+    {
+        return false;
+    }
+
     @ConfigItem(
             keyName = "splitPMs",
             name = "Split PMs",
@@ -2006,6 +2019,17 @@ public interface ChatPanelConfig extends Config {
     {
         return false;
     }
+    @ConfigItem(
+            keyName = "CustomLoginLogoutEnabled",
+            name = "Login Logout",
+            description = "Display friend's Login and Logout messages",
+            section = customChatSection,
+            position = 27
+    )
+    default boolean CustomLoginLogoutEnabled()
+    {
+        return false;
+    }
 
     @ConfigItem(
             keyName = "Mesbox",
@@ -2440,6 +2464,18 @@ public interface ChatPanelConfig extends Config {
     }
 
     @ConfigItem(
+            keyName = "Custom2LoginLogoutEnabled",
+            name = "Login Logout",
+            description = "Display friend's Login and Logout messages",
+            section = custom2ChatSection,
+            position = 27
+    )
+    default boolean Custom2LoginLogoutEnabled()
+    {
+        return false;
+    }
+
+    @ConfigItem(
             keyName = "Mesbox2",
             name = "Mesbox",
             description = "Display Mesbox messages",
@@ -2867,6 +2903,18 @@ public interface ChatPanelConfig extends Config {
             position = 26
     )
     default boolean Custom3ItemExamineEnabled()
+    {
+        return false;
+    }
+
+    @ConfigItem(
+            keyName = "Custom3LoginLogoutEnabled",
+            name = "Login Logout",
+            description = "Display friend's Login and Logout messages",
+            section = custom3ChatSection,
+            position = 27
+    )
+    default boolean Custom3LoginLogoutEnabled()
     {
         return false;
     }
@@ -3398,6 +3446,17 @@ public interface ChatPanelConfig extends Config {
             position = 18
     )
     default Color itemExamineColor() {
+        return null;
+    }
+
+    @ConfigItem(
+            keyName = "loginLogoutColor",
+            name = "Login Logout",
+            description = "Configures the text color for Login and Logout messages.",
+            section = eventSection,
+            position = 19
+    )
+    default Color loginLogoutColor() {
         return null;
     }
 
