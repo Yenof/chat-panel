@@ -1106,6 +1106,18 @@ public interface ChatPanelConfig extends Config {
         return combatTextColor();
     }
 
+    @Range(min = -100, max = 100)
+    @ConfigItem(
+            keyName = "damageNumberColor",
+            name = "Damage Brightness",
+            description = "Configures the brightness of the damage number, applies to all tabs.<br>Negative numbers darken, positive brighten. (Min -100, max 100)",
+            section = combatSection,
+            position = 4
+    )
+    default int damageNumberColor() {
+        return 0;
+    }
+
     @ConfigItem(
             keyName = "onlyshowMyHitsplats",
             name = "Only Show My Combat Events",

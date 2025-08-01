@@ -1642,6 +1642,19 @@ public class ChatPanelSidebar extends PluginPanel {
                     doc.insertString(doc.getLength(), filteredMessage, messageAttrs);
                 }
 
+                if (config.damageNumberColor() != 0 && eventName.contains("COMBAT")) {
+                    Matcher matcher = Pattern.compile("(:\\s*)(\\d+)$").matcher(filteredMessage);
+                    if (matcher.find()) {
+                        int matchStart = doc.getLength() - filteredMessage.length() + matcher.start(2);
+                        int matchEnd = doc.getLength() - filteredMessage.length() + matcher.end(2);
+
+                        SimpleAttributeSet numberAttrs = new SimpleAttributeSet();
+                        Color messageColor = isOddLine ? adjustColor(baseColor, config.chatColorOffset()) : baseColor;
+                        StyleConstants.setForeground(numberAttrs, adjustColor(messageColor, config.damageNumberColor()));
+                        doc.setCharacterAttributes(matchStart, matchEnd - matchStart, numberAttrs, false);
+                    }
+                }
+
                 if (!config.highlightWords3().trim().isEmpty()) {
                     String[] highlightWords3Array = config.highlightWords3().split("\\s*,\\s*");
                     highlightWords(filteredMessage, highlightWords3Array, config.highlightColor3(), config.PartialMatching(), doc);
