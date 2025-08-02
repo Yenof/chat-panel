@@ -1089,6 +1089,9 @@ public class ChatPanelSidebar extends PluginPanel {
             case "DIALOG":
                 color = config.dialogColor();
                 break;
+            case "DIDYOUKNOW":
+                color = config.didYouKnowColor();
+                break;
             case "ENGINE":
                 color = config.engineColor();
                 break;

@@ -1949,6 +1949,18 @@ public interface ChatPanelConfig extends Config {
     }
 
     @ConfigItem(
+            keyName = "DidYouKnow",
+            name = "Did You Know?",
+            description = "Display 'Did You Know?' messages",
+            section = customChatSection,
+            position = 19
+    )
+    default boolean CustomDidYouKnowEnabled()
+    {
+        return false;
+    }
+
+    @ConfigItem(
             keyName = "Engine",
             name = "Engine",
             description = "Display engine messages",
@@ -2392,6 +2404,17 @@ public interface ChatPanelConfig extends Config {
     }
 
     @ConfigItem(
+            keyName = "DidYouKnow2",
+            name = "Did You Know?",
+            description = "Display 'Did You Know?' messages",
+            section = custom2ChatSection,
+            position = 19
+    )
+    default boolean Custom2DidYouKnowEnabled()
+    {
+        return false;
+    }
+    @ConfigItem(
             keyName = "Engine2",
             name = "Engine",
             description = "Display engine messages",
@@ -2831,6 +2854,18 @@ public interface ChatPanelConfig extends Config {
             position = 19
     )
     default boolean Custom3DialogEnabled()
+    {
+        return false;
+    }
+
+    @ConfigItem(
+            keyName = "DidYouKnow3",
+            name = "Did You Know?",
+            description = "Display 'Did You Know?' messages",
+            section = custom3ChatSection,
+            position = 19
+    )
+    default boolean Custom3DidYouKnowEnabled()
     {
         return false;
     }
@@ -3381,6 +3416,17 @@ public interface ChatPanelConfig extends Config {
             position = 13
     )
     default Color dialogColor() {
+        return null;
+    }
+
+    @ConfigItem(
+            keyName = "DidYouKnowColor",
+            name = "Did You Know?",
+            description = "Configures the text color for 'Did You Know?' messages.",
+            section = eventSection,
+            position = 13
+    )
+    default Color didYouKnowColor() {
         return null;
     }
 

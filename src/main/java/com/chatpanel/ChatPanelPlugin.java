@@ -173,6 +173,7 @@ public class ChatPanelPlugin extends Plugin
             case NPC_EXAMINE:
             case SPAM:
             case DIALOG:
+            case DIDYOUKNOW:
             case NPC_SAY:
             case ITEM_EXAMINE:
             case OBJECT_EXAMINE:
@@ -384,6 +385,17 @@ public class ChatPanelPlugin extends Plugin
                     chatPanelSidebar.addCustom2ChatMessage(timestamp, config.identifier2() ? identifier : cleanedName, cleanedMessage, eventName);
                 }
                 if (config.showCustom3Chat() && config.Custom3BroadcastEnabled()) {
+                    chatPanelSidebar.addCustom3ChatMessage(timestamp, config.identifier3() ? identifier : cleanedName, cleanedMessage, eventName);
+                }
+                break;
+            case DIDYOUKNOW:
+                if (config.showCustomChat() && config.CustomDidYouKnowEnabled()) {
+                    chatPanelSidebar.addCustomChatMessage(timestamp, config.identifier1() ? identifier : cleanedName, cleanedMessage, eventName);
+                }
+                if (config.showCustom2Chat() && config.Custom2DidYouKnowEnabled()) {
+                    chatPanelSidebar.addCustom2ChatMessage(timestamp, config.identifier2() ? identifier : cleanedName, cleanedMessage, eventName);
+                }
+                if (config.showCustom3Chat() && config.Custom3DidYouKnowEnabled()) {
                     chatPanelSidebar.addCustom3ChatMessage(timestamp, config.identifier3() ? identifier : cleanedName, cleanedMessage, eventName);
                 }
                 break;
@@ -758,6 +770,8 @@ public class ChatPanelPlugin extends Plugin
                 return "Spam" + cleanedName;
             case DIALOG:
                 return "Dialog" + cleanedName;
+            case DIDYOUKNOW:
+                return "DidYouKnow?" + cleanedName;
             case ITEM_EXAMINE:
                 return "Item Examine" + cleanedName;
             case OBJECT_EXAMINE:
