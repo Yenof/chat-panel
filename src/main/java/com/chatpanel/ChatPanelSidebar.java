@@ -434,12 +434,24 @@ public class ChatPanelSidebar extends PluginPanel {
     }
 
     private void resetTabHistory(int tabIndex) {
+        int result = JOptionPane.showOptionDialog(
+                tabbedPane,
+                "Are you sure you want to delete this tab's entire chat history?",
+                "Erase tab?",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.ERROR_MESSAGE,
+                null,
+                new Object[] {"Yes", "No"},
+                "No"
+        );
+        if (result != JOptionPane.YES_OPTION) return;
         Component tabComponent = tabbedPane.getComponentAt(tabIndex);
         if (tabComponent instanceof JScrollPane) {
             JTextPane chatArea = (JTextPane) ((JScrollPane) tabComponent).getViewport().getView();
             chatArea.setText("");
         }
     }
+
     private static final int COOLDOWN = 100;
 
     private final Timer positionCoolDown = new Timer(COOLDOWN, e -> {
