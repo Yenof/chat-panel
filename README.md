@@ -1,4 +1,8 @@
-# Chat Panel Plugin
+# Chat Panel 
+<a href="https://discord.gg/AT44tqXVwH">
+  <img src="https://img.shields.io/badge/Support-ffd700?logo=discord&logoColor=%23000000&style=Yeno" alt="Support">
+</a>
+<br><br>
 
 
 This plugin displays in-game chat in a separate window or the side panel.
@@ -7,22 +11,10 @@ The Chat Panel window can be moved freely like a normal windowed application, in
 
 
 
+
 ![image](https://github.com/Yenof/chat-panel/assets/122739279/93b9e17f-f326-4a2e-a8ba-d4a0b977fd0a)![fixedimage](https://github.com/user-attachments/assets/803ba7ca-ae16-4ac7-993b-2b4dd2853b5e)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+<br>
+ 
 
 ## Configuration
 There are many config groups that contain the plugin's settings.<br/>
@@ -37,6 +29,10 @@ Configurable text, background, timestamp, and name colors per tab.
 Adjustable Font sizes per tab. (Min size 5, max 200)
 
 ![Screenshot from 2024-08-21 16-55-26](https://github.com/user-attachments/assets/41cbed28-8bc1-4e5b-ba2c-23341f7506b1)
+<br>
+ ##
+ 
+### <span style='color:rgb(220,138,0)'>General</span>
 
 "Odd Row Shading" tints alternating lines of chat for visibility. Negative entries darken, positive lighten.
 
@@ -48,9 +44,12 @@ Options for Bold, Italic, Italic Bold, and Plain font styles.
 
 Timestamps can be set using SimpleDateFormat patterns. (HH:mm, yyyy.MM.dd, and more)
 
-![Screenshot from 2024-08-21 16-56-05](https://github.com/user-attachments/assets/9a2e785c-4a3e-4b5e-8083-452863599e70) ![Screenshot from 2024-08-21 16-56-26](https://github.com/user-attachments/assets/39385ad7-24c8-4568-8f72-6e8a16edd2c8)
+![Screenshot from 2024-08-21 16-56-05](https://github.com/user-attachments/assets/9a2e785c-4a3e-4b5e-8083-452863599e70)
+<br>
 
-
+##
+ 
+### <span style='color:rgb(220,138,0)'>Pop Out Window</span>
 
 The window size and transparency (opacity) of the pop out window can be configured.
 
@@ -60,32 +59,90 @@ The pop out window can be set to "Always on Top", keeping it on top of other win
 
 "Remember Pop Out Position" saves the size and location of the pop out window to be used next time the pop out window is opened.
 
-![image](https://github.com/user-attachments/assets/fae88c8f-edc4-4930-a6f8-660a5f064aaa) ![Screenshot from 2024-08-21 16-59-57](https://github.com/user-attachments/assets/bbcae4ad-2d9a-4547-bd68-53c516f94555)
+![Screenshot from 2024-08-21 16-56-26](https://github.com/user-attachments/assets/39385ad7-24c8-4568-8f72-6e8a16edd2c8)
+<br>
 
+ ##
 
-
-
-
+### <span style='color:rgb(220,138,0)'>Tabs</span>
 Can choose between many tabs to display: Public, Private, Clan, Friends Chat, Game, All, Combat, and Custom (1, 2, 3).
 
-"Tab Font" allows your choice of Font from the General section to apply to the tab names. 
+"Tab Fonts" allows your choice of Font from the General section to apply to the tab names, colored with "Tab Name".
 
-By enabling "Split PMs" in the "Private Chat" settings, you can spawn individual tabs for each private chat conversation. 
+"Selection Underline" controls the color of the line beneath the selected tab.
 
-For the Combat Tab, there are options to only show combat events related to you, hide zero damage events, and show deaths in chat.
+By enabling "Split PMs" in the "Private Chat" config group, you can spawn individual tabs for each private chat conversation. 
 
-The Message Type Coloring section allows you to select a color for a chat type. (Public Chat green, Examine text red). <br>
-These choices persist through all Chat Tabs, overriding the text colors chosen in the Chat Tabs.
+![image](https://github.com/user-attachments/assets/fae88c8f-edc4-4930-a6f8-660a5f064aaa)
+<br>
 
+##
+ 
+### <span style='color:rgb(220,138,0)'>Combat</span>
+
+"Damage Brightness" configures the brightness of the combat damage number. Applies to all tabs. <br>Negative numbers darken, positive brighten. (Min -100, max 100)
+
+To hide hitSplat messages from other players, enable "Only Show My Combat Events".
+
+"Show Deaths" adds a message when something dies. This does include things killed by other players.
+
+To hide blocked/missed hits, you can enable "Hide Zero Damage Events".
+
+"Add Combat Labels" adds "Combat" and "Death" to messages from those chat types in the Combat tab.
+
+"Legacy Combat Messages" displays combat messages in the old style (pre-Chat Panel 2.3).
+<br>
+E.g., `Guard was hit for: 0`  instead of `Guard blocked`.
+
+<img width="231" height="345" alt="image" src="https://github.com/user-attachments/assets/1a26668f-124c-4d3d-9545-b316e355f82d" />
+<br>
+
+##
+ 
+### <span style='color:rgb(220,138,0)'>Highlighting & Filtering</span>
 
 Chosen words (separated by commas) can be highlighted with the "Highlight Words" options. "Partial Word Highlighting" allows highlight words like "Sell" to highlight part of "Selling".
 
 Similarly, chosen words (separated by commas) can be censored from chat using the "Filtered Words" setting.
 By default this censors the filtered word, but with the "Remove Filtered Message" option enabled it removes the entire message. 
 
-The Notifications section allows tabs to be highlighted when they receive a new content. Select the tabs you want notifications for by holding Ctrl and clicking them.
+"Game Highlights" keeps text color highlights given by the game. (Olm orbs, Tempoross attacks)",
 
-![image](https://github.com/user-attachments/assets/774fa4a0-d4db-46d3-beef-3cf1dd751e94) ![image](https://github.com/user-attachments/assets/f11286dd-efe6-4e1a-a585-bef3aa963255)
+
+"RuneLite Highlights" keeps text color highlights given by RuneLite. (GE Average<span style='color:yellow'> 92</span> HA value <span style='color:yellow'>2</span>)<br>Uses the colors from the Transparent section in the `Chat Color` plugin.
+
+
+<img width="231" height="419" alt="image" src="https://github.com/user-attachments/assets/b7466bc2-2856-4cb3-a992-a411bd0dfd9a" />
+<br>
+  
+##
+ 
+
+### <span style='color:rgb(220,138,0)'>Message Type Coloring</span>
+The Message Type Coloring section allows you to select a color for a chat type. (Public Chat green, Examine text red). <br>
+These choices persist through all Chat Tabs, overriding the text colors chosen in the Chat Tabs.
+
+Override Name, Timestamp, and Group Name recolor these sections with the color chosen for the Message Type.
+
+
+<img width="225" height="120" alt="Screenshot from 2025-08-01 15-30-55" src="https://github.com/user-attachments/assets/45b41c3d-56b0-4845-928c-cef53b415331" />
+<br>
+  
+##
+ 
+### <span style='color:rgb(220,138,0)'>Notifications</span>
+The Notifications section allows tabs to be highlighted when they receive new content. 
+
+Select the tabs you want notifications for by holding Ctrl and clicking them. (Ctrl+Click)
+
+"Notification Color" configures what color the tab is changed to when notifying.
+
+![image](https://github.com/user-attachments/assets/774fa4a0-d4db-46d3-beef-3cf1dd751e94)
+<br>
+
+##
+ 
+### <span style='color:rgb(220,138,0)'>Extras</span>
 
 The height of the Chat Area in the side panel can be adjusted, recommended to be less than the height of your client.
 
@@ -93,9 +150,9 @@ The sidebar icon position can be adjusted or the icon hidden.
 
 Can hide the Pop out and Pop in buttons, except when the side panel is empty.
 
-Can disable the icon for the pop out windows.
+Can disable the icon for the pop out windows. (Titlebar, Taskbar)
 
-"Export Log Date" allows you to select a date format for the .txt file created by Export Log.
+"Export Log Date" allows you to select a date format for the `.txt` file created by Export Log.
 
 By using "Enable My Name Color" and "My Name Color" you can set a name color for when a message has your username in the name field.
 
@@ -103,9 +160,9 @@ By using "Enable My Name Color" and "My Name Color" you can set a name color for
 
 ![image](https://github.com/user-attachments/assets/6240f1f5-9150-438b-8e9e-a44b19af8583) 
 
-
-
-
+ 
+<br>
+ 
 
 
 ## Usage:
@@ -114,7 +171,7 @@ Right-clicking on a tab shows additional options like "Pop Out", "Reset History"
 
 The right-click "Search" option functions similarly to Ctrl+F; it finds, highlights, and jumps to instances of the search term within the tab.
 
-Clicking a tab with middle mouse button can also pop the tab out into it's own window.
+Clicking a tab with middle mouse button can also pop the tab out into its own window.
 
 Scroll and click to lock position while reading, return to the bottom to resume snapping to most recent message.
 
@@ -128,12 +185,14 @@ To use a Custom Font, place a `.ttf` or `.otf` file named `customfont.ttf` into 
 It must be named exactly `customfont.ttf`, even if it is an `.otf` file. <br>
 Not all font files work, notably fonts with colors or pictures seem to not work.
 
-![Screenshot from 2024-08-21 17-01-28](https://github.com/user-attachments/assets/5f614adc-536d-43f9-9749-5332f29cdee1) ![Screenshot from 2024-09-15 19-18-22](https://github.com/user-attachments/assets/b572df9f-e5fa-4733-beda-dc189c1e61c8)
+<img width="226" height="269" alt="image" src="https://github.com/user-attachments/assets/b4f28701-8203-47f1-8767-32390608e15c" /> ![Screenshot from 2024-09-15 19-18-22](https://github.com/user-attachments/assets/b572df9f-e5fa-4733-beda-dc189c1e61c8)
 
 
 
 
-
+ 
+<br>
+ 
 ## Notes:
 Max lines of chat is 10,000 by default.
 
@@ -143,21 +202,21 @@ When toggling the plugin on/off it does not remember message history (including 
 
 Really long NPC Dialog messages get cut off and don't show the whole text, there are other plugins that handle this better.
 
-Combat Tab provides very basic combat logging, there are other plugins for more advanced logging.
-
-The Combat tab relies on what the player is targetting, so if you are hit and you have no target it will just say "PlayerName was hit for: 1".
+The Combat tab relies on what the player is targetting, so if you are hit, and you have no target it will just say `PlayerName was hit for: 1`.
 
 The appearance of Chat Panel's titlebar is mostly dependent on your operating system's settings, some systems allow user customization of titlebars.<br/>
-For now, Chat Panel does not inherit RuneLite's Custom Chrome on all OSs, some work though.<br/>
+For now, RuneLite child windows like Chat Panel or Color Picker don't inherit Custom Chrome on all OSs, some work though.<br/>
 Screenshots are taken on X11/GNOME/22.04 with RuneLite's Custom Chrome enabled.
 
 
 <br/>
 <br/>
 <br/>
-<a href="https://discord.gg/AT44tqXVwH"><img src='https://img.shields.io/discord/1307357303099621426?color=ffd700&&logo=discord&logoColor=%23ffd700&style=for-the-badge'/></a>
+<a href="https://discord.gg/AT44tqXVwH">
+  <img src="https://img.shields.io/badge/Discord-ffd700?logo=discord&logoColor=%23000000&style=for-the-badge" alt="Support"style="transform: scale(1.2); transform-origin: top left;">
+</a> 
 
 I love feedback, please feel free to reach out with any comments, concerns, or questions to the Chat Panel Discord. :D<br/>
 or<br/>
-Issues can be posted to Github Issues.<br/>
-Suggestions can be posted to Github Discussions.
+Issues can be posted to GitHub Issues.<br/>
+Suggestions can be posted to GitHub Discussions.
