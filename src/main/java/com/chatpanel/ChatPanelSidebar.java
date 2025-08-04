@@ -1177,7 +1177,7 @@ public class ChatPanelSidebar extends PluginPanel {
                 color = config.welcomeColor();
                 break;
             default:
-                color = config.allChatColor();
+                color = chatArea.getForeground();
         }
 
         if (color == null) {

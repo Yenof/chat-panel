@@ -1673,7 +1673,7 @@ public interface ChatPanelConfig extends Config {
     @ConfigItem(
             keyName = "runeLiteHighlights",
             name = "RuneLite Highlights",
-            description = "Keeps text color highlights given by RuneLite. (GE Average<span style='color:yellow'> 92</span> HA value <span style='color:yellow'>2</span>)<br>Uses the colors from the Transparent section in the Chat Colors plugin.",
+            description = "Keeps text color highlights given by RuneLite. (GE Average<span style='color:yellow'> 92</span> HA value <span style='color:yellow'>2</span>)<br>Uses the colors from the Transparent section in the Chat Color plugin.",
             section = highlightingSection,
             position = 13
     )

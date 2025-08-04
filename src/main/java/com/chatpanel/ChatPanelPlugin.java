@@ -24,7 +24,7 @@ import java.util.Date;
 @PluginDescriptor(
         name = "Chat Panel",
         description = "Displays chat messages in a pop out window or the side panel",
-        tags = {"chat", "panel", "window", "messages", "font", "private", "accessibility", "copy", "pop out", "custom"}
+        tags = {"chat", "panel", "window", "messages", "font", "size", "style", "private", "accessibility", "copy", "pop out", "export", "custom", "combat", "text", "log"}
 )
 public class ChatPanelPlugin extends Plugin
 {
@@ -78,12 +78,12 @@ public class ChatPanelPlugin extends Plugin
         displayUpdateMessage();
     }
 
-    private static final double CURRENT_VERSION = 2.2;
+    private static final double CURRENT_VERSION = 2.3;
     private void displayUpdateMessage()
     {
         double lastVersionShown = config.getVersion();
         String name = "Update";
-        String updateMessage = "Chat Panel has been updated, tabs had a makeover!\nYou can now choose the font size, color, and style of the tab name.\nPMs are now split into individual tabs.\n(Hint: You can turn off Split PMs in Chat Panel configuration.)";
+        String updateMessage = "Chat Panel was updated, here are a few of the new features:\nCombat messages mention the HitSplat type (poison, burn, block, etc.).\nGame Highlights and RuneLite Highlights (Olm orbs, Examine prices, etc.).\nNew Message Type Coloring options for <col=00E7FF>Block</col>, <col=D55101>Burn</col>, <col=FF0000>Max Hit</col>, <col=00FF26>Poison</col>, and more!\nThe readme now includes a Chat Panel Discord.";
         String timestamp = getCurrentTimestamp();
         String eventName = "UPDATE_MESSAGE";
 
