@@ -15,6 +15,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.*;
 
 import net.runelite.client.util.ImageUtil;
+import net.runelite.client.util.Text;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.awt.IllegalComponentStateException;
@@ -1239,8 +1240,8 @@ public class ChatPanelSidebar extends PluginPanel {
                     break;
                 }
             }
-            if (client.getLocalPlayer()!=null) {
-                if (Objects.equals(client.getLocalPlayer().getName(), baseName)) {
+            if (client.getLocalPlayer().getName() != null) {
+                if (Objects.equals(Text.sanitize(client.getLocalPlayer().getName()), Text.sanitize(baseName))) {
                     return config.myNameColor();
                 }
             }
