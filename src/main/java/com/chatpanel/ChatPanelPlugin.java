@@ -147,9 +147,8 @@ public class ChatPanelPlugin extends Plugin
             case LOGINLOGOUTNOTIFICATION:
                 if ((config.showPrivateChat() || config.splitPMs()) && config.loginLogoutNotification()){
                     cleanedName = "";
-                    chatPanelSidebar.addPrivateChatMessage(timestamp, cleanedName, cleanedMessage, eventName);
-                    break;
-                }
+                    chatPanelSidebar.addPrivateChatMessage(timestamp, cleanedName, cleanedMessage, eventName);}
+                break;
             case CLAN_CHAT:
             case CLAN_MESSAGE:
             case CLAN_GUEST_MESSAGE:
@@ -818,7 +817,7 @@ public class ChatPanelPlugin extends Plugin
 
     private String cleanString(String message)
     {
-        return message.replaceAll("<img=[0-9]+>", "").replace("<lt>", "<").replace("<gt>", ">");
+        return message.replaceAll("<img=[0-9]+>", "").replaceAll("CA_ID:\\d+\\|", "").replace("<lt>", "<").replace("<gt>", ">");
     }
 
     private String cleanDialogMessage(String message)
