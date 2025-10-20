@@ -295,7 +295,7 @@ public interface ChatPanelConfig extends Config {
             name = "Hide Sidebar Icon",
             description = "ONLY use with Auto-Pop out and if you REALLY don't want a sidebar icon. Toggle plugin on/off to restore pop out window if closed.",
             section = extrasSection,
-            position = 3
+            position = 4
     )
     default boolean hideSidebarIcon()
     {
@@ -1547,6 +1547,18 @@ public interface ChatPanelConfig extends Config {
     default int randomColorsMinBrightness()
     {
         return 125;
+    }
+
+    @ConfigItem(
+            keyName = "accountIcons",
+            name = "Show Account Type Icons",
+            description = "Shows account type icons such as: Ironman, Leagues, Speedrunning, and more.<br>After changing font sizes, only new messages will have icons resized.",
+            section = extrasSection,
+            position = 3
+    )
+    default boolean accountIcons()
+    {
+        return false;
     }
 
     @ConfigItem(

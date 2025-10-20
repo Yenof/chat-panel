@@ -124,11 +124,11 @@ public class ChatPanelPlugin extends Plugin
     }
     @Subscribe
     public void onChatMessage(ChatMessage event) {
-        String cleanedName = event.getType() == ChatMessageType.PRIVATECHATOUT ? "To " + cleanString(event.getName()) : event.getType() == ChatMessageType.PRIVATECHAT || event.getType() == ChatMessageType.MODPRIVATECHAT? "From " + cleanString(event.getName()) : cleanString(event.getName());
+        String cleanedName =  event.getName().replace('\u00A0', ' ');
         String cleanedMessage = event.getType() == ChatMessageType.DIALOG ? cleanDialogMessage(event.getMessage()) : cleanString(event.getMessage());
         String timestamp = getCurrentTimestamp();
         String eventName = event.getType().name();
-        String privateName = event.getName().replace("[", "").replace("]", "").trim();
+        String privateName = event.getName().replace("[", "").replace("]", "").replace('\u00A0', ' ').trim();
 
         switch (event.getType()) {
             case PUBLICCHAT:
@@ -818,7 +818,7 @@ public class ChatPanelPlugin extends Plugin
 
     private String cleanString(String message)
     {
-        return message.replaceAll("<img=[0-9]+>", "").replace("<lt>", "<").replace("<gt>", ">");
+        return message.replaceAll("CA_ID:\\d+\\|", "").replace("<br>", "\n").replace("<lt>", "<").replace("<gt>", ">").replace('\u00A0', ' ');
     }
 
     private String cleanDialogMessage(String message)

@@ -241,6 +241,7 @@ public class ChatPanelSidebar extends PluginPanel {
     boolean maxPMmessageshown = false;
 
     private JTextPane createPrivateChatTabs(String name) {
+        name = name.replaceAll("<img=[0-9]+>", "").replace("<lt>", "<").replace("<gt>", ">").trim();
         String tabName;
         if (name.startsWith("To ")) {
             tabName = name.substring(3);
@@ -309,6 +310,12 @@ public class ChatPanelSidebar extends PluginPanel {
         }
 
         nameWithPrefix = line.substring(prefixIndex + 1, nameEndIndex).trim();
+
+        if(eventType.equals("PRIVATECHATOUT")){
+            nameWithPrefix = nameWithPrefix.replace("To ", "");
+        } else if (eventType.equals("PRIVATECHAT") || eventType.equals("MODPRIVATECHAT")) {
+            nameWithPrefix = nameWithPrefix.replace("From ", "");
+        }
         message = line.substring(nameEndIndex + 2).trim();
         return new String[]{extractedTimestamp, nameWithPrefix, message, eventType};
     }
@@ -1565,6 +1572,90 @@ public class ChatPanelSidebar extends PluginPanel {
         return message.replaceAll("<col=[0-9a-fA-F]+>|</col>", "").replace("<br>", " ").replace("<colHIGHLIGHT>", "").replace("<colNORMAL>", "");
     }
 
+    private String getIcon(int iconNumber) {
+        switch (iconNumber) {
+            case 0: return "/icons/Player_Moderator.png";
+            case 1: return "/icons/Jagex_Moderator.png";
+            case 2: return "/icons/Ironman.png";
+            case 3: return "/icons/Ultimate_Ironman.png";
+            case 10: return "/icons/Hardcore.png";
+            case 22: return "/icons/Leagues.png";
+            case 41: return "/icons/GIM.png";
+            case 42: return "/icons/HardcoreGIM.png";
+            case 43: return "/icons/UnrankedGIM.png";
+            case 52: return "/icons/Speedrunning.png";
+            default: return null;
+        }
+    }
+
+    private void addName(JTextPane chatArea, StyledDocument doc, String cleanedName, String eventName, SimpleAttributeSet nameAttrs) throws BadLocationException {
+        String toFrom = "";
+        if (eventName.equals("PRIVATECHATOUT")) {
+            toFrom = "To ";
+        } else if (eventName.equals("PRIVATECHAT") || eventName.equals("MODPRIVATECHAT")) {
+            toFrom = "From ";
+        }
+
+        int dash = cleanedName.indexOf(" - ");
+        String identifier = "";
+        String name = cleanedName;
+
+        if (dash != -1) {
+            identifier = cleanedName.substring(0, dash + 3);
+            name = cleanedName.substring(dash + 3);
+        }
+        doc.insertString(doc.getLength(), "[" + identifier + toFrom, nameAttrs);
+
+        List<Object> parts = findIcons(name, chatArea);
+        for (Object part : parts) {
+            if (part instanceof String) {
+                doc.insertString(doc.getLength(), (String) part, nameAttrs);
+            } else if (part instanceof ImageIcon) {
+                SimpleAttributeSet iconAttrs = new SimpleAttributeSet();
+                StyleConstants.setIcon(iconAttrs, (ImageIcon) part);
+                doc.insertString(doc.getLength(), " ", iconAttrs);
+            }
+        }
+
+        doc.insertString(doc.getLength(), "]: ", nameAttrs);
+    }
+
+    private List<Object> findIcons(String text, JTextPane chatArea) {
+        List<Object> parts = new ArrayList<>();
+        if (!config.accountIcons()) {
+            parts.add(text.replaceAll("<img=(\\d+)>\\s*", ""));
+            return parts;
+        }
+        text = text.replaceAll("<img=(\\d+)>\\s*", "<img=$1> ");
+        Pattern imgNumber = Pattern.compile("<img=(\\d+)>");
+        Matcher matcher = imgNumber.matcher(text);
+        int lastEnd = 0;
+
+        while (matcher.find()) {
+            if (matcher.start() > lastEnd) {
+                parts.add(text.substring(lastEnd, matcher.start()));
+            }
+            int iconNumber = Integer.parseInt(matcher.group(1));
+            String iconPath = getIcon(iconNumber);
+
+            if (iconPath != null) {
+                BufferedImage image = ImageUtil.loadImageResource(getClass(), iconPath);
+                if (image != null) {
+                    int targetHeight = (int) (chatArea.getFont().getSize() * 0.72);
+                    int targetWidth = image.getWidth() * targetHeight / image.getHeight();
+                    ImageIcon icon = new ImageIcon(image.getScaledInstance(targetWidth, targetHeight, Image.SCALE_SMOOTH));
+                    parts.add(icon);
+                }
+            }
+            lastEnd = matcher.end();
+        }
+
+        if (lastEnd < text.length()) {
+            parts.add(text.substring(lastEnd));
+        }
+        return parts;
+    }
+
     private void addMessageToChatArea(JTextPane chatArea, String timestamp, String cleanedName, String message, String eventName, String notifier) {
         SwingUtilities.invokeLater(() -> {
             String groupName = groupNameFinder(eventName);
@@ -1636,10 +1727,11 @@ public class ChatPanelSidebar extends PluginPanel {
                     doc.insertString(doc.getLength(), "[" + groupName + "] ", groupAttrs);
                 }
 				if (!cleanedName.isEmpty()) {
-                    doc.insertString(doc.getLength(), "[" + cleanedName + "]: ", nameAttrs);
+                    addName(chatArea, doc, cleanedName, eventName, nameAttrs);
                 }
 
                 if (config.randomColors()) {
+                    filteredMessage = filterAllChatMessage(message);
                     for (char c : filteredMessage.toCharArray()) {
                         SimpleAttributeSet charAttrs = new SimpleAttributeSet();
                         Color randomColor = getRandomBrightColor.get();
@@ -1651,11 +1743,19 @@ public class ChatPanelSidebar extends PluginPanel {
                     filteredMessage = filterAllChatMessage(message);
                 } else {
                     filteredMessage = filterAllChatMessage(message);
-
-                    SimpleAttributeSet messageAttrs = new SimpleAttributeSet();
-                    Color messageColor = isOddLine ? adjustColor(baseColor, config.chatColorOffset()) : baseColor;
-                    StyleConstants.setForeground(messageAttrs, messageColor);
-                    doc.insertString(doc.getLength(), filteredMessage, messageAttrs);
+                    List<Object> parts = findIcons(filteredMessage, chatArea);
+                    for (Object part : parts) {
+                        if (part instanceof String) {
+                            SimpleAttributeSet messageAttrs = new SimpleAttributeSet();
+                            Color messageColor = isOddLine ? adjustColor(baseColor, config.chatColorOffset()) : baseColor;
+                            StyleConstants.setForeground(messageAttrs, messageColor);
+                            doc.insertString(doc.getLength(), (String) part, messageAttrs);
+                        } else if (part instanceof ImageIcon) {
+                            SimpleAttributeSet iconAttrs = new SimpleAttributeSet();
+                            StyleConstants.setIcon(iconAttrs, (ImageIcon) part);
+                            doc.insertString(doc.getLength(), " ", iconAttrs);
+                        }
+                    }
                 }
 
                 if (config.damageNumberColor() != 0 && eventName.contains("COMBAT")) {
