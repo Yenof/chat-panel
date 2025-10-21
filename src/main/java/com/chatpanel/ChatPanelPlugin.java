@@ -147,9 +147,8 @@ public class ChatPanelPlugin extends Plugin
             case LOGINLOGOUTNOTIFICATION:
                 if ((config.showPrivateChat() || config.splitPMs()) && config.loginLogoutNotification()){
                     cleanedName = "";
-                    chatPanelSidebar.addPrivateChatMessage(timestamp, cleanedName, cleanedMessage, eventName);
-                    break;
-                }
+                    chatPanelSidebar.addPrivateChatMessage(timestamp, cleanedName, cleanedMessage, eventName);}
+                break;
             case CLAN_CHAT:
             case CLAN_MESSAGE:
             case CLAN_GUEST_MESSAGE:
