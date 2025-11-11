@@ -1,9 +1,12 @@
 package com.chatpanel;
 
+import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
+import net.runelite.api.gameval.VarPlayerID;
 import net.runelite.client.RuneLite;
 import net.runelite.client.config.ChatColorConfig;
 import net.runelite.client.ui.ColorScheme;
+import net.runelite.client.ui.JagexColors;
 import net.runelite.client.ui.PluginPanel;
 
 import javax.inject.Inject;
@@ -1044,40 +1047,101 @@ public class ChatPanelSidebar extends PluginPanel {
             }
         }}
     }
+    private Color jagexColors(ChatMessageType type) {
+        int jagColor;
+        switch (type)
+        {
+            case PUBLICCHAT:
+            case MODCHAT:
+                jagColor = VarPlayerID.OPTION_CHAT_COLOUR_PUBLIC_TRANSPARENT;
+                break;
+            case PRIVATECHATOUT:
+            case MODPRIVATECHAT:
+            case PRIVATECHAT:
+            case LOGINLOGOUTNOTIFICATION:
+                jagColor = VarPlayerID.OPTION_CHAT_COLOUR_PRIVATE_TRANSPARENT;
+                break;
+            case AUTOTYPER:
+            case MODAUTOTYPER:
+                jagColor = VarPlayerID.OPTION_CHAT_COLOUR_AUTOCHAT_TRANSPARENT;
+                break;
+            case BROADCAST:
+                jagColor = VarPlayerID.OPTION_CHAT_COLOUR_BROADCAST_TRANSPARENT;
+                break;
+            case FRIENDSCHAT:
+                jagColor = VarPlayerID.OPTION_CHAT_COLOUR_FRIENDSCHAT_TRANSPARENT;
+                break;
+            case CLAN_CHAT:
+                jagColor = VarPlayerID.OPTION_CHAT_COLOUR_CLANCHAT_TRANSPARENT;
+                break;
+            case TRADEREQ:
+                jagColor = VarPlayerID.OPTION_CHAT_COLOUR_TRADEREQ_TRANSPARENT;
+                break;
+            case CHALREQ_TRADE:
+            case CHALREQ_FRIENDSCHAT:
+            case CHALREQ_CLANCHAT:
+                jagColor = VarPlayerID.OPTION_CHAT_COLOUR_CHALLENGEREQ_TRANSPARENT;
+                break;
+            case CLAN_GUEST_CHAT:
+                jagColor = VarPlayerID.OPTION_CHAT_COLOUR_GUESTCLAN_TRANSPARENT;
+                break;
+            case CLAN_GIM_CHAT:
+                jagColor = VarPlayerID.OPTION_CHAT_COLOUR_GIMCHAT_TRANSPARENT;
+                break;
+            case CLAN_MESSAGE:
+                jagColor = VarPlayerID.OPTION_CHAT_COLOUR_CLANBROADCAST_TRANSPARENT;
+                break;
+            case CLAN_GIM_MESSAGE:
+                jagColor = VarPlayerID.OPTION_CHAT_COLOUR_GIMBROADCAST_TRANSPARENT;
+                break;
+            case DIDYOUKNOW:
+                jagColor = VarPlayerID.OPTION_CHAT_COLOUR_DIDYOUKNOW_TRANSPARENT;
+                break;
+            default:
+                return null;
+        }
+        int colorValue = client.getVarpValue(jagColor);
+        if (colorValue == 0) {
+            return null;
+        }
+        Color color = new Color(colorValue - 1);
+        return color;
+
+    }
 
     private Color getColorForCase(String eventName, JTextPane chatArea) {
         Color color;
 
         switch (eventName) {
             case "BROADCAST":
-                color = config.broadcastColor();
+                color = config.broadcastColor() != null ? config.broadcastColor() : (config.clientColor() ? jagexColors(ChatMessageType.valueOf(eventName)) : null);
                 break;
             case "CHALREQ_CLANCHAT":
-                color = config.chalReqClanColor();
+                color = config.chalReqClanColor() != null ? config.chalReqClanColor() : (config.clientColor() ? jagexColors(ChatMessageType.valueOf(eventName)) : null);
                 break;
             case "CHALREQ_FRIENDSCHAT":
-                color = config.chalReqFriendsColor();
+                color = config.chalReqFriendsColor() != null ? config.chalReqFriendsColor() : (config.clientColor() ? jagexColors(ChatMessageType.valueOf(eventName)) : null);
                 break;
             case "CHALREQ_TRADE":
-                color = config.chalReqTradeColor();
+                color = config.chalReqTradeColor() != null ? config.chalReqTradeColor() : (config.clientColor() ? jagexColors(ChatMessageType.valueOf(eventName)) : null);
                 break;
             case "CLAN_CHAT":
-                color = config.clanColor();
+                color = config.clanColor() != null ? config.clanColor() : (config.clientColor() ? (chatColorConfig.transparentClanChatMessage() != null ? chatColorConfig.transparentClanChatMessage() : jagexColors(ChatMessageType.valueOf(eventName))) : null);
                 break;
             case "CLAN_GUEST_CHAT":
-                color = config.clanGuestChatColor();
+                color = config.clanGuestChatColor() != null ? config.clanGuestChatColor() : (config.clientColor() ? (chatColorConfig.transparentClanChatGuestMessage() != null ? chatColorConfig.transparentClanChatGuestMessage() : jagexColors(ChatMessageType.valueOf(eventName))) : null);
                 break;
             case "CLAN_GUEST_MESSAGE":
-                color = config.clanGuestMessageColor();
+                color = config.clanGuestMessageColor() != null ? config.clanGuestMessageColor() : (config.clientColor() ? chatColorConfig.transparentClanChatGuestInfo() : null);
                 break;
             case "CLAN_GIM_CHAT":
-                color = config.clanGimChatColor();
+                color = config.clanGimChatColor() != null ? config.clanGimChatColor() : (config.clientColor() ? (chatColorConfig.transparentClanChatMessage() != null ? chatColorConfig.transparentClanChatMessage() : jagexColors(ChatMessageType.valueOf(eventName))) : null);
                 break;
             case "CLAN_GIM_MESSAGE":
-                color = config.clanGimMessageColor();
+                color = config.clanGimMessageColor() != null ? config.clanGimMessageColor() : (config.clientColor() ? (chatColorConfig.transparentClanChatInfo() != null ? chatColorConfig.transparentClanChatInfo() : jagexColors(ChatMessageType.valueOf(eventName))) : null);
                 break;
             case "CLAN_MESSAGE":
-                color = config.clanMessageColor();
+                color = config.clanMessageColor() != null ? config.clanMessageColor() : (config.clientColor() ? (chatColorConfig.transparentClanChatInfo() != null ? chatColorConfig.transparentClanChatInfo() : jagexColors(ChatMessageType.valueOf(eventName))) : null);
                 break;
             case "COMBAT":
                 color = config.combatColor();
@@ -1101,7 +1165,7 @@ public class ChatPanelSidebar extends PluginPanel {
                 color = config.combatPoisonColor() != null ? config.combatPoisonColor() : config.combatColor();;
                 break;
             case "CONSOLE":
-                color = config.consoleColor();
+                color = config.consoleColor() != null ? config.consoleColor() : (config.clientColor() ? chatColorConfig.transparentGameMessage() : null); // RL calls CONSOLE messages a "Game message".
                 break;
             case "DEATH":
                 color = config.deathColor();
@@ -1110,64 +1174,64 @@ public class ChatPanelSidebar extends PluginPanel {
                 color = config.dialogColor();
                 break;
             case "DIDYOUKNOW":
-                color = config.didYouKnowColor();
+                color = config.didYouKnowColor() != null ? config.didYouKnowColor() : (config.clientColor() ? jagexColors(ChatMessageType.valueOf(eventName)) : null);
                 break;
             case "ENGINE":
-                color = config.engineColor();
+                color = config.engineColor() != null ? config.engineColor() : (config.clientColor() ? chatColorConfig.transparentServerMessage() : null); // The RuneLite Chat Color plugin uses a setting called "Server message" for GAMEMESSAGE chat type, and "Game message" setting for CONSOLE chat type lol.
                 break;
             case "FRIENDSCHAT":
-                color = config.friendsColor();
+                color = config.friendsColor() != null ? config.friendsColor() : (config.clientColor() ? (chatColorConfig.transparentFriendsChatMessage() != null ? chatColorConfig.transparentFriendsChatMessage() : jagexColors(ChatMessageType.valueOf(eventName))) : null);
                 break;
             case "FRIENDSCHATNOTIFICATION":
-                color = config.friendsChatNotificationColor();
+                color = config.friendsChatNotificationColor() != null ? config.friendsChatNotificationColor() : (config.clientColor() ? chatColorConfig.transparentFriendsChatInfo() : null);
                 break;
             case "FRIENDNOTIFICATION":
                 color = config.friendNotificationColor();
                 break;
             case "GAMEMESSAGE":
-                color = config.gameMessageColor();
+                color = config.gameMessageColor() != null ? config.gameMessageColor() : (config.clientColor() ? chatColorConfig.transparentServerMessage() : null); // RL uses a config called "Server message" for GAMEMESSAGE chat type, and "Game message" config for CONSOLE chat type.
                 break;
             case "IGNORENOTIFICATION":
                 color = config.ignoreNotificationColor();
                 break;
             case "ITEM_EXAMINE":
-                color = config.itemExamineColor();
+                color = config.itemExamineColor() != null ? config.itemExamineColor() : (config.clientColor() ? chatColorConfig.transparentExamine() : null);
                 break;
             case "LOGINLOGOUTNOTIFICATION":
-                color = config.loginLogoutColor();
+                color = config.loginLogoutColor() != null ? config.loginLogoutColor() : (config.clientColor() ? (chatColorConfig.transparentPrivateUsernames() != null ? chatColorConfig.transparentPrivateUsernames() : jagexColors(ChatMessageType.valueOf(eventName))) : null);
                 break;
             case "MESBOX":
                 color = config.mesboxColor();
                 break;
             case "MODAUTOTYPER":
-                color = config.modAutoTyperColor();
+                color = config.modAutoTyperColor() != null ? config.modAutoTyperColor() : (config.clientColor() ? (chatColorConfig.transparentAutochatMessage() != null ? chatColorConfig.transparentAutochatMessage() : jagexColors(ChatMessageType.valueOf(eventName))) : null);
                 break;
             case "MODCHAT":
-                color = config.modChatColor();
+                color = config.modChatColor() != null ? config.modChatColor() : (config.clientColor() ? (chatColorConfig.transparentPublicChat() != null ? chatColorConfig.transparentPublicChat() : jagexColors(ChatMessageType.valueOf(eventName))) : null);
                 break;
             case "MODPRIVATECHAT":
-                color = config.modPrivateChatColor();
+                color = config.modPrivateChatColor() != null ? config.modPrivateChatColor() : (config.clientColor() ? (chatColorConfig.transparentPrivateMessageReceived() != null ? chatColorConfig.transparentPrivateMessageReceived() : jagexColors(ChatMessageType.valueOf(eventName))) : null);
                 break;
             case "NPC_EXAMINE":
-                color = config.npcExamineColor();
+                color = config.npcExamineColor() != null ? config.npcExamineColor() : (config.clientColor() ? chatColorConfig.transparentExamine() : null);
                 break;
             case "NPC_SAY":
                 color = config.npcSayColor();
                 break;
             case "OBJECT_EXAMINE":
-                color = config.objectExamineColor();
+                color = config.objectExamineColor() != null ? config.objectExamineColor() : (config.clientColor() ? chatColorConfig.transparentExamine() : null);
                 break;
             case "PRIVATECHAT":
-                color = config.privateColor();
+                color = config.privateColor() != null ? config.privateColor() : (config.clientColor() ? (chatColorConfig.transparentPrivateMessageReceived() != null ? chatColorConfig.transparentPrivateMessageReceived() : jagexColors(ChatMessageType.valueOf(eventName))) : null);
                 break;
             case "PRIVATECHATOUT":
-                color = config.privateChatOutColor();
+                color = config.privateChatOutColor() != null ? config.privateChatOutColor() : (config.clientColor() ? (chatColorConfig.transparentPrivateMessageSent() != null ? chatColorConfig.transparentPrivateMessageSent() : jagexColors(ChatMessageType.valueOf(eventName))) : null);
                 break;
             case "PUBLICCHAT":
-                color = config.publicColor();
+                color = config.publicColor() != null ? config.publicColor() : (config.clientColor() ? (chatColorConfig.transparentPublicChat() != null ? chatColorConfig.transparentPublicChat() : jagexColors(ChatMessageType.valueOf(eventName))) : null);
                 break;
             case "SPAM":
-                color = config.spamColor();
+                color = config.spamColor() != null ? config.spamColor() : (config.clientColor() ? chatColorConfig.transparentFiltered() : null);
                 break;
             case "TRADE":
                 color = config.tradeColor();
@@ -1176,7 +1240,7 @@ public class ChatPanelSidebar extends PluginPanel {
                 color = config.tradeSentColor();
                 break;
             case "TRADEREQ":
-                color = config.tradeReqColor();
+                color = config.tradeReqColor() != null ? config.tradeReqColor() : (config.clientColor() ? (chatColorConfig.transparentTradeChatMessage() != null ? chatColorConfig.transparentTradeChatMessage() : jagexColors(ChatMessageType.valueOf(eventName))) : null);
                 break;
             case "UNKNOWN":
                 color = config.unknownColor();
@@ -1253,10 +1317,65 @@ public class ChatPanelSidebar extends PluginPanel {
                 }
             }
         }
+        Color defaultColor = getDefaultColorForChatArea(chatArea);
+
         if (config.OverrideNameColor() && (getColorForCase(eventName, chatArea) != chatArea.getForeground())) {
             return getColorForCase(eventName, chatArea);
         }
 
+        if (config.clientColor()) {
+            String baseName = cleanedName;
+            for (String identifier : Identifiers) {
+                if (cleanedName.startsWith(identifier)) {
+                    baseName = cleanedName.substring(identifier.length()).trim();
+                    break;
+                }
+            }
+
+            if (client.getLocalPlayer().getName() != null) {
+                if (Objects.equals(Text.sanitize(client.getLocalPlayer().getName()), Text.sanitize(baseName))) {
+                    if(config.enableMyNameColor()){
+                        return config.myNameColor();
+                    } else {
+                        if(chatColorConfig.transparentPlayerUsername() != null){
+                            return chatColorConfig.transparentPlayerUsername();
+                        }
+                    }
+                }
+            }
+
+            if (client.isFriended(cleanedName, true)) {
+                return chatColorConfig.transparentPublicFriendUsernames() != null ? chatColorConfig.transparentPublicFriendUsernames() : defaultColor;
+            }
+            switch (eventName)
+            {
+                case "PUBLICCHAT":
+                case "MODCHAT":
+                    return chatColorConfig.transparentUsername() != null ? chatColorConfig.transparentUsername() : defaultColor;
+                case "PRIVATECHATOUT":
+                    return chatColorConfig.transparentPrivateMessageSent() != null ? chatColorConfig.transparentPrivateMessageSent() : defaultColor;
+                case "PRIVATECHAT":
+                case "MODPRIVATECHAT":
+                    return chatColorConfig.transparentPrivateMessageReceived() != null ? chatColorConfig.transparentPrivateMessageReceived() : defaultColor;
+                case "FRIENDSCHATNOTIFICATION":
+                    return chatColorConfig.transparentFriendsChatInfo() != null ? chatColorConfig.transparentFriendsChatInfo() : defaultColor;
+                case "FRIENDSCHAT":
+                    return chatColorConfig.transparentFriendsChatUsernames() != null ? chatColorConfig.transparentFriendsChatUsernames() : defaultColor;
+                case "CLAN_GIM_MESSAGE":
+                case "CLAN_MESSAGE":
+                case "CLAN_CHAT":
+                case "CLAN_GIM_CHAT":
+                    return chatColorConfig.transparentClanChatUsernames() != null ? chatColorConfig.transparentClanChatUsernames() : defaultColor;
+                case "CLAN_GUEST_MESSAGE":
+                case "CLAN_GUEST_CHAT":
+                    return chatColorConfig.transparentClanChatGuestUsernames() != null ? chatColorConfig.transparentClanChatGuestUsernames() : defaultColor;
+            }
+        }
+
+        return defaultColor;
+    }
+
+    private Color getDefaultColorForChatArea(JTextPane chatArea) {
         if (chatArea == publicChatArea) {
             return config.publicChatNameColor();
         } else if (chatArea == privateChatArea) {
@@ -1322,6 +1441,24 @@ public class ChatPanelSidebar extends PluginPanel {
         if (config.OverrideGroupNameColor() && (getColorForCase(eventName, chatArea) != chatArea.getForeground())) {
             return getColorForCase(eventName, chatArea);
         }
+        if (config.clientColor()) {
+            switch (eventName)
+            {
+                case "FRIENDSCHATNOTIFICATION":
+                case "FRIENDSCHAT":
+                    return chatColorConfig.transparentFriendsChatChannelName() != null ? chatColorConfig.transparentFriendsChatChannelName() : JagexColors.CHAT_FC_NAME_TRANSPARENT_BACKGROUND;
+                case "CLAN_GIM_MESSAGE":
+                case "CLAN_MESSAGE":
+                case "CLAN_CHAT":
+                case "CLAN_GIM_CHAT":
+                    return chatColorConfig.transparentClanChannelName() != null ? chatColorConfig.transparentClanChannelName() : JagexColors.CHAT_FC_NAME_TRANSPARENT_BACKGROUND;
+                case "CLAN_GUEST_MESSAGE":
+                case "CLAN_GUEST_CHAT":
+                    return chatColorConfig.transparentClanChannelGuestName() != null ? chatColorConfig.transparentClanChannelGuestName() : JagexColors.CHAT_FC_NAME_TRANSPARENT_BACKGROUND;
+            }
+        }
+
+
         if (chatArea == clanChatArea) {
             return config.clanChatGroupNameColor();
         } else if (chatArea == friendsChatArea) {
@@ -1623,7 +1760,7 @@ public class ChatPanelSidebar extends PluginPanel {
     private List<Object> findIcons(String text, JTextPane chatArea) {
         List<Object> parts = new ArrayList<>();
         if (!config.accountIcons()) {
-            parts.add(text.replaceAll("<img=(\\d+)>\\s*", ""));
+            parts.add(text.replaceAll("<img=(\\d+)>", ""));
             return parts;
         }
         text = text.replaceAll("<img=(\\d+)>\\s*", "<img=$1> ");
@@ -1641,7 +1778,7 @@ public class ChatPanelSidebar extends PluginPanel {
             if (iconPath != null) {
                 BufferedImage image = ImageUtil.loadImageResource(getClass(), iconPath);
                 if (image != null) {
-                    int targetHeight = (int) (chatArea.getFont().getSize() * 0.72);
+                    int targetHeight = (int) (chatArea.getFont().getSize() * 0.73);
                     int targetWidth = image.getWidth() * targetHeight / image.getHeight();
                     ImageIcon icon = new ImageIcon(image.getScaledInstance(targetWidth, targetHeight, Image.SCALE_SMOOTH));
                     parts.add(icon);
@@ -1729,9 +1866,25 @@ public class ChatPanelSidebar extends PluginPanel {
 				if (!cleanedName.isEmpty()) {
                     addName(chatArea, doc, cleanedName, eventName, nameAttrs);
                 }
+                if (config.accountIcons()) {
+                    List<Object> parts = findIcons(message, chatArea);
+                    for (Object part : parts) {
+                    if (part instanceof ImageIcon) {
+                        SimpleAttributeSet iconAttrs = new SimpleAttributeSet();
+                        StyleConstants.setIcon(iconAttrs, (ImageIcon) part);
+                        doc.insertString(doc.getLength(), " ", iconAttrs);
+                    }
+                    }
+                }
+
+                if(config.accountIcons()){ // Idk why I can't figure out how to fix this properly, but this works lol.
+                    filteredMessage = message.replaceAll("\\s*<img=[0-9]+>\\s*", " ");
+                } else {
+                    filteredMessage = message.replaceAll("\\s*<img=[0-9]+>\\s*", "");
+                }
 
                 if (config.randomColors()) {
-                    filteredMessage = filterAllChatMessage(message);
+                    filteredMessage = filterAllChatMessage(filteredMessage);
                     for (char c : filteredMessage.toCharArray()) {
                         SimpleAttributeSet charAttrs = new SimpleAttributeSet();
                         Color randomColor = getRandomBrightColor.get();
@@ -1740,22 +1893,12 @@ public class ChatPanelSidebar extends PluginPanel {
                     }
                 } else if (config.gameHighlights() || config.runeLiteHighlights()){
                     inheritColors(filteredMessage, doc, isOddLine, baseColor, eventName);
-                    filteredMessage = filterAllChatMessage(message);
                 } else {
-                    filteredMessage = filterAllChatMessage(message);
-                    List<Object> parts = findIcons(filteredMessage, chatArea);
-                    for (Object part : parts) {
-                        if (part instanceof String) {
-                            SimpleAttributeSet messageAttrs = new SimpleAttributeSet();
-                            Color messageColor = isOddLine ? adjustColor(baseColor, config.chatColorOffset()) : baseColor;
-                            StyleConstants.setForeground(messageAttrs, messageColor);
-                            doc.insertString(doc.getLength(), (String) part, messageAttrs);
-                        } else if (part instanceof ImageIcon) {
-                            SimpleAttributeSet iconAttrs = new SimpleAttributeSet();
-                            StyleConstants.setIcon(iconAttrs, (ImageIcon) part);
-                            doc.insertString(doc.getLength(), " ", iconAttrs);
-                        }
-                    }
+                    filteredMessage = filterAllChatMessage(filteredMessage);
+                    SimpleAttributeSet messageAttrs = new SimpleAttributeSet();
+                    Color messageColor = isOddLine ? adjustColor(baseColor, config.chatColorOffset()) : baseColor;
+                    StyleConstants.setForeground(messageAttrs, messageColor);
+                    doc.insertString(doc.getLength(), filteredMessage, messageAttrs);
                 }
 
                 if (config.damageNumberColor() != 0 && eventName.contains("COMBAT")) {

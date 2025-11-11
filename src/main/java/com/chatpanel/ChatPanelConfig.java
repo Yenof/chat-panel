@@ -1558,7 +1558,7 @@ public interface ChatPanelConfig extends Config {
     )
     default boolean accountIcons()
     {
-        return false;
+        return true;
     }
 
     @ConfigItem(
@@ -3174,6 +3174,16 @@ public interface ChatPanelConfig extends Config {
     // Start of type based coloring entries.
 
 
+    @ConfigItem(
+            keyName = "clientColor",
+            name = "Client Chat Colors",
+            description = "Uses the colors chosen in RuneLite's Chat Color plugin when possible. (Transparent section) <br> It will prioritize using colors in the following order: Chat Panel Color Overrides > Chat Color Plugin > In-game chat settings > Chat Panel Base Colors",
+            section = eventSection,
+            position = 0
+    )
+    default boolean clientColor() {
+        return !(getVersion() > 0);
+    }
 
     @ConfigItem(
             keyName = "overrideNameColor",
