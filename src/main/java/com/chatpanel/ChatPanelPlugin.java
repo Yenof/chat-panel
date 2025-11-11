@@ -616,10 +616,9 @@ public class ChatPanelPlugin extends Plugin
         {
             if (hitsplatApplied.getHitsplat().isMine() || !config.onlyshowMyHitsplats())
             {
-            Actor attacker = hitsplatApplied.getActor();
-            Actor defender = attacker.getInteracting();
-            String defenderName = attacker.getName();
-            String attackerName = (defender != null) ? defender.getName() : attacker.getName();
+            String attacker = (hitsplatApplied.getHitsplat().isMine() && hitsplatApplied.getActor() != client.getLocalPlayer()) ? client.getLocalPlayer().getName() : null;
+            String defenderName = hitsplatApplied.getActor().getName();
+            String attackerName = (attacker != null) ? attacker : defenderName;
             Hitsplat hitsplat = hitsplatApplied.getHitsplat();
             int hitsplatType = hitsplat.getHitsplatType();
             if (hitsplat.getAmount() == 0 && config.hidezerodamageHitsplats()) {
@@ -672,14 +671,14 @@ public class ChatPanelPlugin extends Plugin
                 }
             String identifier = "Combat";
             String timestamp = getCurrentTimestamp();
-            String combatMessage = (defender == null) ? defenderName  + " " + (adjective.equals("bled") ? "" : "was ") + adjective +  " for: " +damageAmount
+            String combatMessage = (attacker == null) ? defenderName  + " " + (adjective.equals("bled") ? "" : "was ") + adjective +  " for: " +damageAmount
                     : attackerName + " " + adjective + " " + defenderName + " for: " + damageAmount;
             if (hitsplatType == 12 || hitsplatType == 13) {
                     eventName = "COMBAT_BLOCK";
-                    combatMessage = (defender != null) ? defenderName + " blocked " + attackerName : attackerName + " blocked";
+                    combatMessage = (attacker != null) ? defenderName + " blocked " + attackerName : attackerName + " blocked";
                 }
             if (config.legacyCombat()){
-                    combatMessage = (defender == null) ? defenderName + " was hit for: " + damageAmount : attackerName + " hit " + defenderName + " for: " + damageAmount;
+                    combatMessage = (attacker == null) ? defenderName + " was hit for: " + damageAmount : attackerName + " hit " + defenderName + " for: " + damageAmount;
             }
             if (config.showCombatTab()) {
             chatPanelSidebar.addCombatMessage(timestamp, (config.identifierC()) ? "Combat" : "", combatMessage, eventName);
