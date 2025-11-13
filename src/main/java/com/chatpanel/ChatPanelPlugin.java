@@ -166,6 +166,7 @@ public class ChatPanelPlugin extends Plugin
                     chatPanelSidebar.addFriendsChatMessage(timestamp, cleanedName, cleanedMessage, eventName);}
                 break;
             case BROADCAST:
+                cleanedMessage = cleanedMessage.contains("|") ? cleanedMessage.substring(0, cleanedMessage.lastIndexOf('|')) : cleanedMessage;
             case GAMEMESSAGE:
             case MESBOX:
             case ENGINE:
