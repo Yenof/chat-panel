@@ -88,7 +88,7 @@ public interface ChatPanelConfig extends Config {
     String generalSection = "general";
 
     @ConfigSection(
-            name = "Public Chat",
+            name = "Public Tab",
             description = "Settings for the Public Chat tab",
             closedByDefault = true,
             position = 11
@@ -96,7 +96,7 @@ public interface ChatPanelConfig extends Config {
     String publicChatSection = "publicChat";
 
     @ConfigSection(
-            name = "Private Chat",
+            name = "Private Tab",
             description = "Settings for the Private Chat tab",
             closedByDefault = true,
             position = 10
@@ -104,7 +104,7 @@ public interface ChatPanelConfig extends Config {
     String privateChatSection = "privateChat";
 
     @ConfigSection(
-            name = "Clan Chat",
+            name = "Clan Tab",
             description = "Settings for the Clan Chat tab",
             closedByDefault = true,
             position = 6
@@ -112,7 +112,7 @@ public interface ChatPanelConfig extends Config {
     String clanChatSection = "clanChat";
 
     @ConfigSection(
-            name = "Friends Chat",
+            name = "Friends Tab",
             description = "Settings for the Friends Chat tab",
             closedByDefault = true,
             position = 8
@@ -120,7 +120,7 @@ public interface ChatPanelConfig extends Config {
     String friendsChatSection = "friendsChat";
 
     @ConfigSection(
-            name = "Game Chat",
+            name = "Game Tab",
             description = "Settings for the Game Chat tab",
             closedByDefault = true,
             position = 9
@@ -128,7 +128,7 @@ public interface ChatPanelConfig extends Config {
     String gameChatSection = "gameChat";
 
     @ConfigSection(
-            name = "All Chat",
+            name = "All Tab",
             description = "Settings for the All Chat tab, not all of the chat.",
             closedByDefault = true,
             position = 5
@@ -136,7 +136,7 @@ public interface ChatPanelConfig extends Config {
     String allChatSection = "allChat";
 
     @ConfigSection(
-            name = "Custom Chat",
+            name = "Custom Chat Tab",
             description = "Settings for the Custom Chat tab, select all desired chat channels to be displayed. Long list.",
             closedByDefault = true,
             position = 12
@@ -144,7 +144,7 @@ public interface ChatPanelConfig extends Config {
     String customChatSection = "customChat";
 
     @ConfigSection(
-            name = "Custom Chat 2",
+            name = "Custom Chat Tab 2",
             description = "Settings for the second Custom Chat tab, select all desired chat channels to be displayed. Long list.",
             closedByDefault = true,
             position = 13
@@ -152,7 +152,7 @@ public interface ChatPanelConfig extends Config {
     String custom2ChatSection = "custom2Chat";
 
     @ConfigSection(
-            name = "Custom Chat 3",
+            name = "Custom Chat Tab 3",
             description = "Settings for the third Custom Chat tab, select all desired chat channels to be displayed. Long list.",
             closedByDefault = true,
             position = 14
@@ -201,8 +201,8 @@ public interface ChatPanelConfig extends Config {
     String tabSection = "tabselection";
 
     @ConfigSection(
-            name = "Message Type Coloring",
-            description = "Override colors by chat message type. Affects all Chat Tabs.",
+            name = "Message Type Recoloring",
+            description = "Override colors by chat message type. Affects all Chat Tabs. Uses these colors instead of Client Colors (Chat Color plugin).",
             closedByDefault = true,
             position = 15
     )
@@ -215,6 +215,14 @@ public interface ChatPanelConfig extends Config {
             position = 22
     )
     String extrasSection = "extras";
+
+    @ConfigSection(
+            name = "Base Colors",
+            description = "The base chat colors, before any recoloring from other sections or plugins.<br>If you have Client Chat Colors enabled, many of these options do nothing.",
+            closedByDefault = true,
+            position = 22
+    )
+    String baseColorsSection = "baseColors";
 
     @Range(min = -100, max = 100)
     @ConfigItem(
@@ -255,7 +263,7 @@ public interface ChatPanelConfig extends Config {
     @ConfigItem(
             keyName = "TimestampFormat",
             name = "Timestamp Format",
-            description = "Enter a custom format (e.g. HH:mm. Sets to this on incorrect entry). Many more options for SimpleDateFormat if searched online",
+            description = "Enter a custom format (e.g. HH:mm. Sets to this on incorrect entry).<br>Many more options for SimpleDateFormat if searched online.",
             section = generalSection,
             position = 7
     )
@@ -304,10 +312,10 @@ public interface ChatPanelConfig extends Config {
 
     @ConfigItem(
             keyName = "publicChatColor",
-            name = "Public Chat Color",
-            description = "Configures the font color of the public chat messages.",
-            section = publicChatSection,
-            position = 1
+            name = "Public Tab Text",
+            description = "Configures the font color of the Public tab messages.",
+            section = baseColorsSection,
+            position = 28
     )
     default Color publicChatColor()
     {
@@ -316,8 +324,8 @@ public interface ChatPanelConfig extends Config {
 
     @ConfigItem(
             keyName = "publicChatBackground",
-            name = "Public Chat Background",
-            description = "Configures the background color of the public chat.",
+            name = "Background Color",
+            description = "Configures the background color of the Public tab.",
             section = publicChatSection,
             position = 0
 
@@ -329,10 +337,10 @@ public interface ChatPanelConfig extends Config {
 
     @ConfigItem(
             keyName = "publicChatNameColor",
-            name = "Public Chat Name Color",
-            description = "Configures the player name color for public chat.",
-            section = publicChatSection,
-            position = 2
+            name = "Public Tab Names",
+            description = "Configures the player name color for the Public tab.",
+            section = baseColorsSection,
+            position = 30
     )
     default Color publicChatNameColor()
     {
@@ -341,8 +349,8 @@ public interface ChatPanelConfig extends Config {
 
     @ConfigItem(
             keyName = "publicChatTimestampColor",
-            name = "Public Chat Timestamp Color",
-            description = "Configures the timestamp color for public chat.",
+            name = "Timestamp Color",
+            description = "Configures the timestamp color the Public tab.",
             section = publicChatSection,
             position = 2
     )
@@ -354,7 +362,7 @@ public interface ChatPanelConfig extends Config {
     @Range(min = 5, max = 200)
     @ConfigItem(
             keyName = "publicChatFontSize",
-            name = "Public Chat Font Size",
+            name = "Font Size",
             description = "Configures the font size of the public chat messages.",
             section = publicChatSection,
             position = 3
@@ -366,10 +374,10 @@ public interface ChatPanelConfig extends Config {
 
     @ConfigItem(
             keyName = "privateChatColor",
-            name = "Private Chat Color",
-            description = "Configures the font color of the private chat messages.",
-            section = privateChatSection,
-            position = 1
+            name = "Private Tab Text",
+            description = "Configures the font color of the Private tab messages.",
+            section = baseColorsSection,
+            position = 24
     )
     default Color privateChatColor()
     {
@@ -378,8 +386,8 @@ public interface ChatPanelConfig extends Config {
 
     @ConfigItem(
             keyName = "privateChatBackground",
-            name = "Private Chat Background",
-            description = "Configures the background color of the private chat.",
+            name = "Background Color",
+            description = "Configures the background color of the Private tab.",
             section = privateChatSection,
             position = 0
     )
@@ -390,10 +398,10 @@ public interface ChatPanelConfig extends Config {
 
     @ConfigItem(
             keyName = "privateChatNameColor",
-            name = "Private Chat Name Color",
-            description = "Configures the player name color for private chat.",
-            section = privateChatSection,
-            position = 2
+            name = "Private Tab Names",
+            description = "Configures the player name color for the Private tab.",
+            section = baseColorsSection,
+            position = 26
     )
     default Color privateChatNameColor()
     {
@@ -402,8 +410,8 @@ public interface ChatPanelConfig extends Config {
 
     @ConfigItem(
             keyName = "privateChatTimestampColor",
-            name = "Private Chat Timestamp Color",
-            description = "Configures the timestamp color for private chat.",
+            name = "Timestamp Color",
+            description = "Configures the timestamp color for the Private tab.",
             section = privateChatSection,
             position = 2
     )
@@ -415,8 +423,8 @@ public interface ChatPanelConfig extends Config {
     @Range(min = 5, max = 200)
     @ConfigItem(
             keyName = "privateChatFontSize",
-            name = "Private Chat Font Size",
-            description = "Configures the font size of the private chat messages.",
+            name = "Font Size",
+            description = "Configures the font size of the Private tab.",
             section = privateChatSection,
             position = 3
     )
@@ -440,10 +448,10 @@ public interface ChatPanelConfig extends Config {
 
     @ConfigItem(
             keyName = "splitPMs",
-            name = "Split PMs",
+            name = "Split Private Messages",
             description = "Spawns a new chat tab for each private chat conversation. (PM Tabs)",
-            section = privateChatSection,
-            position = 7
+            section = tabSection,
+            position = 2
     )
     default boolean splitPMs()
     {
@@ -455,8 +463,8 @@ public interface ChatPanelConfig extends Config {
             keyName = "maxPMTabs",
             name = "Max PM Tabs",
             description = "Maximum number of PM tabs to spawn before sending new conversations to the private tab.",
-            section = privateChatSection,
-            position = 8
+            section = extrasSection,
+            position = 7
     )
     default int maxPMTabs()
     {
@@ -465,10 +473,10 @@ public interface ChatPanelConfig extends Config {
 
     @ConfigItem(
             keyName = "clanChatColor",
-            name = "Chat Color",
+            name = "Clan Tab Text",
             description = "Configures the font color of messages in the Clan tab.",
-            section = clanChatSection,
-            position = 1
+            section = baseColorsSection,
+            position = 8
     )
     default Color clanChatColor()
     {
@@ -489,10 +497,10 @@ public interface ChatPanelConfig extends Config {
 
     @ConfigItem(
             keyName = "clanChatNameColor",
-            name = "Name Color",
-            description = "Configures the player name color for Clan tab.",
-            section = clanChatSection,
-            position = 2
+            name = "Clan Tab Names",
+            description = "Configures the player name color in the Clan tab.",
+            section = baseColorsSection,
+            position = 10
     )
     default Color clanChatNameColor()
     {
@@ -513,10 +521,10 @@ public interface ChatPanelConfig extends Config {
 
     @ConfigItem(
             keyName = "clanChatGroupNameColor",
-            name = "Clan Name Color",
+            name = "Clan Tab Clan Name",
             description = "Configures the color of the Clan name in the Clan tab.",
-            section = clanChatSection,
-            position = 5
+            section = baseColorsSection,
+            position = 12
     )
     default Color clanChatGroupNameColor()
     {
@@ -550,10 +558,10 @@ public interface ChatPanelConfig extends Config {
 
     @ConfigItem(
             keyName = "friendsChatColor",
-            name = "Chat Color",
+            name = "Friends Tab Text",
             description = "Configures the font color of the Friends Chat tab.",
-            section = friendsChatSection,
-            position = 1
+            section = baseColorsSection,
+            position = 14
     )
     default Color friendsChatColor()
     {
@@ -574,10 +582,10 @@ public interface ChatPanelConfig extends Config {
 
     @ConfigItem(
             keyName = "friendsChatNameColor",
-            name = "Name Color",
+            name = "Friends Tab Names",
             description = "Configures the player name color for the Friends Chat tab.",
-            section = friendsChatSection,
-            position = 2
+            section = baseColorsSection,
+            position = 16
     )
     default Color friendsChatNameColor()
     {
@@ -598,10 +606,10 @@ public interface ChatPanelConfig extends Config {
 
     @ConfigItem(
             keyName = "friendsChatGroupNameColor",
-            name = "FC Name Color",
+            name = "Friends Tab FC Name",
             description = "Configures the color of the FC name in the Friends Chat tab.",
-            section = friendsChatSection,
-            position = 3
+            section = baseColorsSection,
+            position = 18
     )
     default Color friendsChatGroupNameColor()
     {
@@ -635,10 +643,10 @@ public interface ChatPanelConfig extends Config {
 
     @ConfigItem(
             keyName = "gameChatColor",
-            name = "Game Chat Color",
-            description = "Configures the font color of the game chat messages.",
-            section = gameChatSection,
-            position = 1
+            name = "Game Tab Text",
+            description = "Configures the font color of the Game tab.",
+            section = baseColorsSection,
+            position = 20
     )
     default Color gameChatColor()
     {
@@ -647,8 +655,8 @@ public interface ChatPanelConfig extends Config {
 
     @ConfigItem(
             keyName = "gameChatBackgroundColor",
-            name = "Game Chat Background",
-            description = "Configures the background color of the game chat.",
+            name = "Background Color",
+            description = "Configures the background color of the Game tab.",
             section = gameChatSection,
             position = 0
     )
@@ -659,10 +667,10 @@ public interface ChatPanelConfig extends Config {
 
     @ConfigItem(
             keyName = "gameChatNameColor",
-            name = "Game Chat Name Color",
-            description = "Configures the name color for game chat.",
-            section = gameChatSection,
-            position = 2
+            name = "Game Tab Names",
+            description = "Configures the color of names in the Game tab.",
+            section = baseColorsSection,
+            position = 22
     )
     default Color gameChatNameColor()
     {
@@ -671,8 +679,8 @@ public interface ChatPanelConfig extends Config {
 
     @ConfigItem(
             keyName = "gameChatTimestampColor",
-            name = "Game Chat Timestamp Color",
-            description = "Configures the timestamp color for game chat.",
+            name = "Timestamp Color",
+            description = "Configures the timestamp color for the Game tab.",
             section = gameChatSection,
             position = 2
     )
@@ -684,8 +692,8 @@ public interface ChatPanelConfig extends Config {
     @Range(min = 5, max = 200)
     @ConfigItem(
             keyName = "gameChatFontSize",
-            name = "Game Chat Font Size",
-            description = "Configures the font size of the game chat messages.",
+            name = "Font Size",
+            description = "Configures the font size of the Game tab messages.",
             section = gameChatSection,
             position = 3
     )
@@ -695,11 +703,23 @@ public interface ChatPanelConfig extends Config {
     }
 
     @ConfigItem(
+            keyName = "hideSpam",
+            name = "Hide Spam",
+            description = "Hide/show the 'Spam' chat message type. (Filtered)",
+            section = gameChatSection,
+            position = 3
+    )
+    default boolean hideSpam()
+    {
+        return false;
+    }
+
+    @ConfigItem(
             keyName = "allChatColor",
-            name = "All Chat Color",
-            description = "Configures the font color of the All Chat messages.",
-            section = allChatSection,
-            position = 1
+            name = "All Tab Text",
+            description = "Configures the font color of the All tab.",
+            section = baseColorsSection,
+            position = 2
     )
     default Color allChatColor()
     {
@@ -708,8 +728,8 @@ public interface ChatPanelConfig extends Config {
 
     @ConfigItem(
             keyName = "allChatBackground",
-            name = "All Chat Background",
-            description = "Configures the background color of the All Chat.",
+            name = "Background Color",
+            description = "Configures the background color of the All Tab.",
             section = allChatSection,
             position = 0
     )
@@ -720,10 +740,10 @@ public interface ChatPanelConfig extends Config {
 
     @ConfigItem(
             keyName = "allChatNameColor",
-            name = "All Chat Name Color",
-            description = "Configures the name color for all chat.",
-            section = allChatSection,
-            position = 2
+            name = "All Tab Names",
+            description = "Configures the color of names for the ALL tab.",
+            section = baseColorsSection,
+            position = 4
     )
     default Color allChatNameColor()
     {
@@ -732,8 +752,8 @@ public interface ChatPanelConfig extends Config {
 
     @ConfigItem(
             keyName = "allChatTimestampColor",
-            name = "All Chat Timestamp Color",
-            description = "Configures the timestamp color for all chat.",
+            name = "Timestamp Color",
+            description = "Configures the timestamp color for the All tab.",
             section = allChatSection,
             position = 2
     )
@@ -744,10 +764,10 @@ public interface ChatPanelConfig extends Config {
 
     @ConfigItem(
             keyName = "allChatGroupNameColor",
-            name = "Group Name Color",
+            name = "All Tab Group Name",
             description = "Configures the color of the Clan/FC name in the All tab.",
-            section = allChatSection,
-            position = 2
+            section = baseColorsSection,
+            position = 6
     )
     default Color allChatGroupNameColor()
     {
@@ -757,8 +777,8 @@ public interface ChatPanelConfig extends Config {
     @Range(min = 5, max = 200)
     @ConfigItem(
             keyName = "allChatFontSize",
-            name = "All Chat Font Size",
-            description = "Configures the font size of the All Chat messages.",
+            name = "Font Size",
+            description = "Configures the font size of the All tab messages.",
             section = allChatSection,
             position = 3
     )
@@ -781,10 +801,10 @@ public interface ChatPanelConfig extends Config {
 
     @ConfigItem(
             keyName = "customChatColor",
-            name = "Text Color",
-            description = "Configures the font color.",
-            section = customChatSection,
-            position = 2
+            name = "Custom 1 Text",
+            description = "Configures the font color for the Custom tab.",
+            section = baseColorsSection,
+            position = 34
     )
     default Color customChatColor()
     {
@@ -805,10 +825,10 @@ public interface ChatPanelConfig extends Config {
 
     @ConfigItem(
             keyName = "customChatNameColor",
-            name = "Name Color",
-            description = "Configures the name color.",
-            section = customChatSection,
-            position = 3
+            name = "Custom 1 Names",
+            description = "Configures the color of names in the Custom tab.",
+            section = baseColorsSection,
+            position = 36
     )
     default Color customChatNameColor()
     {
@@ -829,10 +849,10 @@ public interface ChatPanelConfig extends Config {
 
     @ConfigItem(
             keyName = "customChatGroupNameColor",
-            name = "Group Name Color",
+            name = "Custom 1 Group Name",
             description = "Configures the color of the Clan/FC name in the Custom tab.",
-            section = customChatSection,
-            position = 4
+            section = baseColorsSection,
+            position = 38
     )
     default Color customChatGroupNameColor()
     {
@@ -878,10 +898,10 @@ public interface ChatPanelConfig extends Config {
 
     @ConfigItem(
             keyName = "custom2ChatColor",
-            name = "Text Color",
-            description = "Configures the font color.",
-            section = custom2ChatSection,
-            position = 2
+            name = "Custom 2 Text",
+            description = "Configures the font color of the Custom 2 tab.",
+            section = baseColorsSection,
+            position = 40
     )
     default Color custom2ChatColor()
     {
@@ -902,10 +922,10 @@ public interface ChatPanelConfig extends Config {
 
     @ConfigItem(
             keyName = "custom2ChatNameColor",
-            name = "Name Color",
-            description = "Configures the name color.",
-            section = custom2ChatSection,
-            position = 3
+            name = "Custom 2 Names",
+            description = "Configures the color of names in the Custom 2 tab.",
+            section = baseColorsSection,
+            position = 42
     )
     default Color custom2ChatNameColor()
     {
@@ -926,10 +946,10 @@ public interface ChatPanelConfig extends Config {
 
     @ConfigItem(
             keyName = "custom2ChatGroupNameColor",
-            name = "Group Name Color",
+            name = "Custom 2 Group Name",
             description = "Configures the color of the Clan/FC name in the Custom tab.",
-            section = custom2ChatSection,
-            position = 4
+            section = baseColorsSection,
+            position = 44
     )
     default Color custom2ChatGroupNameColor()
     {
@@ -975,10 +995,10 @@ public interface ChatPanelConfig extends Config {
 
     @ConfigItem(
             keyName = "custom3ChatColor",
-            name = "Text Color",
-            description = "Configures the font color.",
-            section = custom3ChatSection,
-            position = 2
+            name = "Custom 3 Text",
+            description = "Configures the font color of the Custom 3 tab.",
+            section = baseColorsSection,
+            position = 46
     )
     default Color custom3ChatColor()
     {
@@ -999,10 +1019,10 @@ public interface ChatPanelConfig extends Config {
 
     @ConfigItem(
             keyName = "custom3ChatNameColor",
-            name = "Name Color",
-            description = "Configures the name color.",
-            section = custom3ChatSection,
-            position = 3
+            name = "Custom 3 Names",
+            description = "Configures the color of names in the Custom 3 tab.",
+            section = baseColorsSection,
+            position = 48
     )
     default Color custom3ChatNameColor()
     {
@@ -1023,10 +1043,10 @@ public interface ChatPanelConfig extends Config {
 
     @ConfigItem(
             keyName = "custom3ChatGroupNameColor",
-            name = "Group Name Color",
+            name = "Custom 3 Group Name",
             description = "Configures the color of the Clan/FC name in the Custom tab.",
-            section = custom3ChatSection,
-            position = 4
+            section = baseColorsSection,
+            position = 50
     )
     default Color custom3ChatGroupNameColor()
     {
@@ -1060,10 +1080,10 @@ public interface ChatPanelConfig extends Config {
 
     @ConfigItem(
             keyName = "combatTextColor",
-            name = "Text Color",
-            description = "Configures the font color.",
-            section = combatSection,
-            position = 2
+            name = "Combat Text",
+            description = "Configures the font color of the Combat tab.",
+            section = baseColorsSection,
+            position = 32
     )
     default Color combatTextColor()
     {
@@ -1084,10 +1104,10 @@ public interface ChatPanelConfig extends Config {
 
     @ConfigItem(
             keyName = "combatLabelColor",
-            name = "Label Color",
-            description = "Configures the color of the labels in this tab (e.g. Combat, Death).",
-            section = combatSection,
-            position = 3
+            name = "Combat Label Color",
+            description = "Configures the color of the labels in the Combat tab (e.g. Combat, Death).",
+            section = baseColorsSection,
+            position = 33
     )
     default Color combatLabelColor()
     {
@@ -1371,7 +1391,7 @@ public interface ChatPanelConfig extends Config {
             name = "Show Public Chat",
             description = "Show/hide the Public Chat tab",
             section = tabSection,
-            position = 6
+            position = 8
     )
     default boolean showPublicChat()
     {
@@ -1383,7 +1403,7 @@ public interface ChatPanelConfig extends Config {
             name = "Show Private Chat",
             description = "Show/hide the Private Chat tab",
             section = tabSection,
-            position = 5
+            position = 7
     )
     default boolean showPrivateChat()
     {
@@ -1395,7 +1415,7 @@ public interface ChatPanelConfig extends Config {
             name = "Show Clan Chat",
             description = "Show/hide the Clan Chat tab",
             section = tabSection,
-            position = 1
+            position = 3
     )
     default boolean showClanChat()
     {
@@ -1407,7 +1427,7 @@ public interface ChatPanelConfig extends Config {
             name = "Show Game Chat",
             description = "Show/hide the Game tab",
             section = tabSection,
-            position = 4
+            position = 6
     )
     default boolean showGameChat()
     {
@@ -1419,7 +1439,7 @@ public interface ChatPanelConfig extends Config {
             name = "Show All Chat",
             description = "Show/hide the All Chat tab",
             section = tabSection,
-            position = 1
+            position = 3
     )
     default boolean showAllChat()
     {
@@ -1431,7 +1451,7 @@ public interface ChatPanelConfig extends Config {
             name = "Show Friends Chat Channel",
             description = "Show/hide the Friends Chat tab",
             section = tabSection,
-            position = 3
+            position = 5
     )
     default boolean showFriendsChat()
     {
@@ -1443,7 +1463,7 @@ public interface ChatPanelConfig extends Config {
             name = "Show Custom Chat",
             description = "Show/hide the Custom Chat tab, have fun!",
             section = tabSection,
-            position = 9
+            position = 11
     )
     default boolean showCustomChat()
     {
@@ -1455,7 +1475,7 @@ public interface ChatPanelConfig extends Config {
             name = "Show Custom Chat 2",
             description = "Show/hide the second Custom Chat tab, have more fun!",
             section = tabSection,
-            position = 10
+            position = 12
     )
     default boolean showCustom2Chat()
     {
@@ -1467,7 +1487,7 @@ public interface ChatPanelConfig extends Config {
             name = "Show Custom Chat 3",
             description = "Show/hide the third Custom Chat tab, have all the fun!",
             section = tabSection,
-            position = 11
+            position = 13
     )
     default boolean showCustom3Chat()
     {
@@ -1479,7 +1499,7 @@ public interface ChatPanelConfig extends Config {
             name = "Show Combat Tab",
             description = "Show/hide Combat tab. (Goblin hits Player for: 2), If target unknown: (Player was hit for: 1) <br> Provides very basic combat logging, there are other plugins for more advanced logging",
             section = tabSection,
-            position = 2
+            position = 4
     )
     default boolean showCombatTab()
     {
@@ -3177,12 +3197,12 @@ public interface ChatPanelConfig extends Config {
     @ConfigItem(
             keyName = "clientColor",
             name = "Client Chat Colors",
-            description = "Uses the colors chosen in RuneLite's Chat Color plugin when possible. (Transparent section) <br> It will prioritize using colors in the following order: Chat Panel Color Overrides > Chat Color Plugin > In-game chat settings > Chat Panel Base Colors",
-            section = eventSection,
-            position = 0
+            description = "Uses the colors chosen in RuneLite's <span style='color:#00FFFF'>Chat Color plugin</span> when possible. (Transparent section) <br> It will prioritize using colors in the following order: Chat Panel Message Type Recoloring > Chat Color Plugin > In-game chat settings > Chat Panel Base Colors",
+            section = generalSection,
+            position = 7
     )
     default boolean clientColor() {
-        return !(getVersion() > 0);
+        return getVersion() == 0 || getVersion() > 2.3;
     }
 
     @ConfigItem(

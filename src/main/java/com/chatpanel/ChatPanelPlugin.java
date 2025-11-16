@@ -172,6 +172,7 @@ public class ChatPanelPlugin extends Plugin
             case ENGINE:
             case NPC_EXAMINE:
             case SPAM:
+                if (config.hideSpam()) break;
             case DIALOG:
             case DIDYOUKNOW:
             case NPC_SAY:

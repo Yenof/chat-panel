@@ -1311,7 +1311,7 @@ public class ChatPanelSidebar extends PluginPanel {
                     break;
                 }
             }
-            if (client.getLocalPlayer().getName() != null) {
+            if (client.getLocalPlayer() != null && client.getLocalPlayer().getName() != null) {
                 if (Objects.equals(Text.sanitize(client.getLocalPlayer().getName()), Text.sanitize(baseName))) {
                     return config.myNameColor();
                 }
@@ -1332,7 +1332,7 @@ public class ChatPanelSidebar extends PluginPanel {
                 }
             }
 
-            if (client.getLocalPlayer().getName() != null) {
+            if (client.getLocalPlayer() != null && client.getLocalPlayer().getName() != null) {
                 if (Objects.equals(Text.sanitize(client.getLocalPlayer().getName()), Text.sanitize(baseName))) {
                     if(config.enableMyNameColor()){
                         return config.myNameColor();
@@ -1344,7 +1344,7 @@ public class ChatPanelSidebar extends PluginPanel {
                 }
             }
 
-            if (client.isFriended(cleanedName, true)) {
+            if (client.getLocalPlayer() != null && client.isFriended(cleanedName, true)) {
                 return chatColorConfig.transparentPublicFriendUsernames() != null ? chatColorConfig.transparentPublicFriendUsernames() : defaultColor;
             }
             switch (eventName)
