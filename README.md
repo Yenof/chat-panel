@@ -18,18 +18,20 @@ The Chat Panel window can be moved freely like a normal windowed application, in
 
 ## Configuration
 There are many config groups that contain the plugin's settings.<br/>
-They can be expanded by clicking on the group name or little arrows.
+They can be expanded by clicking on the group name or little arrows.<br>
+Can also use colors chosen in RuneLite's `Chat Color` plugin.
 
-
-![image](https://github.com/user-attachments/assets/5a187a52-abb7-464e-bc9b-b10ba9be7e87) ![image](https://github.com/Yenof/chat-panel/assets/122739279/b561e3ab-7a41-4c49-a90b-ae1fb9552dcc)
+<img width="227" height="515" alt="image" src="https://github.com/user-attachments/assets/2fea9dc5-803e-4fa9-b6e6-97880a904f04" /> ![image](https://github.com/Yenof/chat-panel/assets/122739279/b561e3ab-7a41-4c49-a90b-ae1fb9552dcc)
 
 
 Configurable text, background, timestamp, and name colors per tab.
 
 Adjustable Font sizes per tab. (Min size 5, max 200)
 
-![Screenshot from 2024-08-21 16-55-26](https://github.com/user-attachments/assets/41cbed28-8bc1-4e5b-ba2c-23341f7506b1)
+
+<img width="231" height="110" alt="image" src="https://github.com/user-attachments/assets/df03a3fc-1d93-4672-ba51-dbce7fa91e4f" />
 <br>
+
  ##
  
 ### <span style='color:rgb(220,138,0)'>General</span>
@@ -42,9 +44,12 @@ The font can be changed by selecting one of the several example fonts, or with t
 
 Options for Bold, Italic, Italic Bold, and Plain font styles.
 
+"Client Chat Colors" enables the colors chosen in RuneLite's `Chat Color` plugin to be used in Chat Panel. 
+(More info in [Base Colors](#base-colors))
+
 Timestamps can be set using SimpleDateFormat patterns. (HH:mm, yyyy.MM.dd, and more)
 
-![Screenshot from 2024-08-21 16-56-05](https://github.com/user-attachments/assets/9a2e785c-4a3e-4b5e-8083-452863599e70)
+<img width="231" height="215" alt="image" src="https://github.com/user-attachments/assets/926eb021-ed54-4861-b608-d8a793c7a825" />
 <br>
 
 ##
@@ -71,9 +76,9 @@ Can choose between many tabs to display: Public, Private, Clan, Friends Chat, Ga
 
 "Selection Underline" controls the color of the line beneath the selected tab.
 
-By enabling "Split PMs" in the "Private Chat" config group, you can spawn individual tabs for each private chat conversation. 
+By enabling "Split Private Messages" you can spawn individual tabs for each private chat conversation. 
 
-![image](https://github.com/user-attachments/assets/fae88c8f-edc4-4930-a6f8-660a5f064aaa)
+<img width="227" height="480" alt="image" src="https://github.com/user-attachments/assets/7261e7ea-a49e-42be-a296-739eb9cfb0ae" />
 <br>
 
 ##
@@ -94,7 +99,7 @@ To hide blocked/missed hits, you can enable "Hide Zero Damage Events".
 <br>
 E.g., `Guard was hit for: 0`  instead of `Guard blocked`.
 
-<img width="231" height="345" alt="image" src="https://github.com/user-attachments/assets/1a26668f-124c-4d3d-9545-b316e355f82d" />
+<img width="227" height="292" alt="image" src="https://github.com/user-attachments/assets/ea3f58ce-9f51-45d3-9275-9aebffdefdfd" />
 <br>
 
 ##
@@ -119,8 +124,9 @@ By default this censors the filtered word, but with the "Remove Filtered Message
  
 
 ### <span style='color:rgb(220,138,0)'>Message Type Coloring</span>
+
 The Message Type Coloring section allows you to select a color for a chat type. (Public Chat green, Examine text red). <br>
-These choices persist through all Chat Tabs, overriding the text colors chosen in the Chat Tabs.
+These choices persist through all Chat Tabs, overriding the text colors chosen in Base Colors and RuneLite's Chat Color plugin.
 
 Override Name, Timestamp, and Group Name recolor these sections with the color chosen for the Message Type.
 
@@ -139,12 +145,45 @@ Select the tabs you want notifications for by holding Ctrl and clicking them. (C
 
 ![image](https://github.com/user-attachments/assets/774fa4a0-d4db-46d3-beef-3cf1dd751e94)
 <br>
+  
+##
+ 
+### <span style='color:rgb(220,138,0)'>Base Colors</span>
+
+The Base Colors section contains the default colors used for each Chat Tab, ***before any other recoloring.***
+<br>
+
+With `Client Chat Colors` enabled, coloring works like this:<br>
+#1 - Colors chosen in Chat Panel's "Message Type Recoloring", and if that's blank...<br>
+#2 - Colors chosen in RuneLite's Chat Color plugin, and if that's blank...<br>
+#3 - Colors chosen in the in-game Settings chat section, and if that's non-applicable...<br>
+#4 - Will default to Chat Panel's Base Colors<br>
+<br>
+
+
+Without `Client Chat Colors`:<br>
+#1 - Colors chosen in Chat Panel's "Message Type Recoloring", and if that's blank...<br>
+#2 - Will default to Chat Panel's Base Colors<br>
+
+
+<br>
+
+_You can recolor almost all of the elements in Chat Panel using only RuneLite's `Chat Color` plugin._ <br>
+_These colors are largely for legacy purposes, it is intended to use primarily the Chat Color plugin for coloring._
+
+<img width="227" height="733" alt="image" src="https://github.com/user-attachments/assets/f1a3f32f-9dd4-40c3-8423-122c99de8072" />
+
+<br>
 
 ##
  
 ### <span style='color:rgb(220,138,0)'>Extras</span>
 
+Max Lines determines the maximum number of lines that can be held in each tab.
+
 The height of the Chat Area in the side panel can be adjusted, recommended to be less than the height of your client.
+
+Show Account Type Icons allows icons like Iron, Hardcore, Leagues, and more, to show up in Chat Panel.
 
 The sidebar icon position can be adjusted or the icon hidden.
 
@@ -154,11 +193,13 @@ Can disable the icon for the pop out windows. (Titlebar, Taskbar)
 
 "Export Log Date" allows you to select a date format for the `.txt` file created by Export Log.
 
+Max PM Tabs configures the maximum number of spawnable private message tabs. 
+
 By using "Enable My Name Color" and "My Name Color" you can set a name color for when a message has your username in the name field.
 
 "Random Colors" randomly-ish recolors individual letters, with a minimum brightness set by the corresponding setting. 
 
-![image](https://github.com/user-attachments/assets/6240f1f5-9150-438b-8e9e-a44b19af8583) 
+<img width="227" height="436" alt="image" src="https://github.com/user-attachments/assets/6fcfcea7-eaab-42ad-8aa0-9b980ddd1acb" />
 
  
 <br>
@@ -201,8 +242,6 @@ Some config options apply retroactively when changed, but not all.
 When toggling the plugin on/off it does not remember message history (including closing and reopening the client).
 
 Really long NPC Dialog messages get cut off and don't show the whole text, there are other plugins that handle this better.
-
-The Combat tab relies on what the player is targetting, so if you are hit, and you have no target it will just say `PlayerName was hit for: 1`.
 
 The appearance of Chat Panel's titlebar is mostly dependent on your operating system's settings, some systems allow user customization of titlebars.<br/>
 For now, RuneLite child windows like Chat Panel or Color Picker don't inherit Custom Chrome on all OSs, some work though.<br/>
