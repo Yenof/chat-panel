@@ -78,12 +78,12 @@ public class ChatPanelPlugin extends Plugin
         displayUpdateMessage();
     }
 
-    private static final double CURRENT_VERSION = 2.3;
+    private static final double CURRENT_VERSION = 2.4;
     private void displayUpdateMessage()
     {
         double lastVersionShown = config.getVersion();
         String name = "Update";
-        String updateMessage = "Chat Panel was updated, here are a few of the new features:\nCombat messages mention the HitSplat type (poison, burn, block, etc.).\nGame Highlights and RuneLite Highlights (Olm orbs, Examine prices, etc.).\nNew Message Type Coloring options for <col=00E7FF>Block</col>, <col=D55101>Burn</col>, <col=FF0000>Max Hit</col>, <col=00FF26>Poison</col>, and more!\nThe readme now includes a Chat Panel Discord.";
+        String updateMessage = "<img=3> Chat Panel has received an update!\nIt can now use colors chosen in RuneLite's <col=00E7FF>Chat Color</col> plugin and display account type icons!\n'Client Chat Colors' can be turned on in the General config section. (more info in Chat Panel's ReadMe)";
         String timestamp = getCurrentTimestamp();
         String eventName = "UPDATE_MESSAGE";
 
