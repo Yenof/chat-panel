@@ -709,13 +709,13 @@ public class ChatPanelPlugin extends Plugin
         if (config.showCombatTab() && config.displayDeaths()) {
             chatPanelSidebar.addCombatMessage(timestamp, (config.identifierC()) ? "Death" : "", deathMessage, eventName);
         }
-        if (config.showCustomChat() && config.CustomCombatEnabled() && config.displayDeaths()) {
+        if (config.showCustomChat() && config.CustomDeathEnabled()) {
             chatPanelSidebar.addCustomChatMessage(timestamp, config.identifier1() ? identifier : "", deathMessage, eventName);
         }
-        if (config.showCustom2Chat() && config.Custom2CombatEnabled() && config.displayDeaths()) {
+        if (config.showCustom2Chat() && config.Custom2DeathEnabled()) {
             chatPanelSidebar.addCustom2ChatMessage(timestamp, config.identifier2() ? identifier : "", deathMessage, eventName);
         }
-        if (config.showCustom3Chat() && config.Custom3CombatEnabled() && config.displayDeaths()) {
+        if (config.showCustom3Chat() && config.Custom3DeathEnabled()) {
             chatPanelSidebar.addCustom3ChatMessage(timestamp, config.identifier3() ? identifier : "", deathMessage, eventName);
         }
     }

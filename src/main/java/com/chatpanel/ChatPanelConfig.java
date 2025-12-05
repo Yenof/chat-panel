@@ -1969,6 +1969,18 @@ public interface ChatPanelConfig extends Config {
     }
 
     @ConfigItem(
+            keyName = "customDeath",
+            name = "Death",
+            description = "Display death messages",
+            section = customChatSection,
+            position = 19
+    )
+    default boolean CustomDeathEnabled()
+    {
+        return false;
+    }
+
+    @ConfigItem(
             keyName = "Dialog",
             name = "Dialog",
             description = "Display dialog messages",
@@ -2424,6 +2436,18 @@ public interface ChatPanelConfig extends Config {
     }
 
     @ConfigItem(
+            keyName = "custom2Death",
+            name = "Death",
+            description = "Display death messages",
+            section = custom2ChatSection,
+            position = 19
+    )
+    default boolean Custom2DeathEnabled()
+    {
+        return false;
+    }
+
+    @ConfigItem(
             keyName = "Dialog2",
             name = "Dialog",
             description = "Display dialog messages",
@@ -2874,6 +2898,18 @@ public interface ChatPanelConfig extends Config {
             position = 18
     )
     default boolean Custom3ConsoleEnabled()
+    {
+        return false;
+    }
+
+    @ConfigItem(
+            keyName = "custom3Death",
+            name = "Death",
+            description = "Display death messages",
+            section = custom3ChatSection,
+            position = 19
+    )
+    default boolean Custom3DeathEnabled()
     {
         return false;
     }
