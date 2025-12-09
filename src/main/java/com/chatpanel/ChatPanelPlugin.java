@@ -621,6 +621,9 @@ public class ChatPanelPlugin extends Plugin
             String attacker = (hitsplatApplied.getHitsplat().isMine() && hitsplatApplied.getActor() != client.getLocalPlayer()) ? client.getLocalPlayer().getName() : null;
             String defenderName = hitsplatApplied.getActor().getName();
             String attackerName = (attacker != null) ? attacker : defenderName;
+            if (defenderName == "null"){
+                defenderName = "Boat";
+            }
             Hitsplat hitsplat = hitsplatApplied.getHitsplat();
             int hitsplatType = hitsplat.getHitsplatType();
             if (hitsplat.getAmount() == 0 && config.hidezerodamageHitsplats()) {
@@ -677,6 +680,10 @@ public class ChatPanelPlugin extends Plugin
                     : attackerName + " " + adjective + " " + defenderName + " for: " + damageAmount;
             if (hitsplatType == 12 || hitsplatType == 13) {
                     eventName = "COMBAT_BLOCK";
+                if (defenderName == "Boat"){
+                    attacker = null;
+                    attackerName = "Boat";
+                }
                     combatMessage = (attacker != null) ? defenderName + " blocked " + attackerName : attackerName + " blocked";
                 }
             if (config.legacyCombat()){
