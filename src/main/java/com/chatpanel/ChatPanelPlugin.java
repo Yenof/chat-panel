@@ -825,7 +825,7 @@ public class ChatPanelPlugin extends Plugin
 
     private String cleanString(String message)
     {
-        return message.replaceAll("CA_ID:\\d+\\|", "").replace("<br>", "\n").replace("<lt>", "<").replace("<gt>", ">").replace('\u00A0', ' ');
+        return message.replaceAll("CA_ID:\\d+\\|", "").replace("<br>", "\n").replace("<lt>", "<").replace("<gt>", ">").replace('\u00A0', ' ').replace("<at>", "@");
     }
 
     private String cleanDialogMessage(String message)
