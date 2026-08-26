@@ -619,10 +619,10 @@ public class ChatPanelPlugin extends Plugin
             if (hitsplatApplied.getHitsplat().isMine() || !config.onlyshowMyHitsplats())
             {
             String attacker = (hitsplatApplied.getHitsplat().isMine() && hitsplatApplied.getActor() != client.getLocalPlayer()) ? client.getLocalPlayer().getName() : null;
-            String defenderName = hitsplatApplied.getActor().getName();
+            String defenderName = getDefenderName(hitsplatApplied.getActor());
             String attackerName = (attacker != null) ? attacker : defenderName;
             if (defenderName == "null"){
-                defenderName = "Boat";
+                defenderName = "Unknown";
             }
             Hitsplat hitsplat = hitsplatApplied.getHitsplat();
             int hitsplatType = hitsplat.getHitsplatType();
@@ -703,6 +703,17 @@ public class ChatPanelPlugin extends Plugin
             }
         }}
     }
+
+    private String getDefenderName(Actor actor) {
+        if (actor instanceof NPC) {
+            int id = ((NPC) actor).getId();
+
+            if (id >= 15185 && id <= 15189) return "Boat";
+            if (id >= 11404 && id <= 11425) return "Barrier";
+        }
+        return actor.getName();
+    }
+
     @Subscribe
     public void onActorDeath(ActorDeath actorDeath) {
         Actor actor = actorDeath.getActor();
