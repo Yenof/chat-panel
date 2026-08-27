@@ -1709,7 +1709,7 @@ public class ChatPanelSidebar extends PluginPanel {
     }
 
     private String filterAllChatMessage(String message) {
-        return message.replaceAll("<col=[0-9a-fA-F]+>|</col>", "").replace("<br>", " ").replace("<colHIGHLIGHT>", "").replace("<colNORMAL>", "");
+        return message.replaceAll("<col=[0-9a-fA-F]+>|</col>", "").replace("<br>", " ").replace("<colHIGHLIGHT>", "").replace("<colNORMAL>", "").replace("@mes_hl_mag@", "").replace("@mes_hl_red@", "");
     }
 
     private String getIcon(int iconNumber) {
