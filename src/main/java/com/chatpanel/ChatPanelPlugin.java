@@ -670,6 +670,9 @@ public class ChatPanelPlugin extends Plugin
                 } else if (hitsplatType == 67 || hitsplatType == 74) {
                     eventName = "COMBAT_BURN";
                     adjective = hitsplatType == 74 ?  "burned" : "bled";
+                } else if (hitsplatType == 76) {
+                   eventName = "COMBAT_CHILL";
+                   adjective = "chilled";
                 } else {
                     eventName = "COMBAT";
                     adjective = "hit";

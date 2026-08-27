@@ -1152,6 +1152,9 @@ public class ChatPanelSidebar extends PluginPanel {
             case "COMBAT_BURN":
                 color = config.combatBurnColor() != null ? config.combatBurnColor() : config.combatColor();
                 break;
+            case "COMBAT_CHILL":
+                color = config.combatChillColor() != null ? config.combatChillColor() : config.combatColor();
+                break;
             case "COMBAT_DRAIN":
                 color = config.combatDrainColor() != null ? config.combatDrainColor() : config.combatColor();
                 break;

@@ -3465,6 +3465,17 @@ public interface ChatPanelConfig extends Config {
     }
 
     @ConfigItem(
+            keyName = "combatChillColor",
+            name = "Combat - Chill",
+            description = "Configures the color for Chill combat messages.",
+            section = eventSection,
+            position = 11
+    )
+    default Color combatChillColor() {
+        return null;
+    }
+
+    @ConfigItem(
             keyName = "consoleColor",
             name = "Console",
             description = "Configures the text color for console messages.",
