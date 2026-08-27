@@ -1895,7 +1895,7 @@ public class ChatPanelSidebar extends PluginPanel {
                         doc.insertString(doc.getLength(), String.valueOf(c), charAttrs);
                     }
                 } else if (config.gameHighlights() || config.runeLiteHighlights()){
-                    inheritColors(filteredMessage, doc, isOddLine, baseColor, eventName);
+                    inheritColors(filteredMessage.replace("@mes_hl_mag@", "").replace("@mes_hl_red@", ""), doc, isOddLine, baseColor, eventName);
                 } else {
                     filteredMessage = filterAllChatMessage(filteredMessage);
                     SimpleAttributeSet messageAttrs = new SimpleAttributeSet();
