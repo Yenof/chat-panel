@@ -1709,7 +1709,7 @@ public class ChatPanelSidebar extends PluginPanel {
     }
 
     private String filterAllChatMessage(String message) {
-        return message.replaceAll("<col=[0-9a-fA-F]+>|</col>", "").replace("<br>", " ").replace("<colHIGHLIGHT>", "").replace("<colNORMAL>", "").replace("@mes_hl_mag@", "").replace("@mes_hl_red@", "");
+        return message.replaceAll("<col=[0-9a-fA-F]+>|</col>", "").replace("<br>", " ").replace("<colHIGHLIGHT>", "").replace("<colNORMAL>", "").replaceAll("@mes_hl_[A-Za-z]{3}@", "");
     }
 
     private String getIcon(int iconNumber) {
@@ -1895,7 +1895,7 @@ public class ChatPanelSidebar extends PluginPanel {
                         doc.insertString(doc.getLength(), String.valueOf(c), charAttrs);
                     }
                 } else if (config.gameHighlights() || config.runeLiteHighlights()){
-                    inheritColors(filteredMessage.replace("@mes_hl_mag@", "").replace("@mes_hl_red@", ""), doc, isOddLine, baseColor, eventName);
+                    inheritColors(filteredMessage.replaceAll("@mes_hl_[A-Za-z]{3}@", ""), doc, isOddLine, baseColor, eventName);
                 } else {
                     filteredMessage = filterAllChatMessage(filteredMessage);
                     SimpleAttributeSet messageAttrs = new SimpleAttributeSet();
