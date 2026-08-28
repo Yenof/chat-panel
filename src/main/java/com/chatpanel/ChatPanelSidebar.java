@@ -952,12 +952,9 @@ public class ChatPanelSidebar extends PluginPanel {
         if (!CUSTOM_FONT_FILE.exists()) {
             if (!fontLoadErrorShown) {
                 String message = "The Custom Font file is empty. \nTo use a Custom Font place a .ttf or .otf file named customfont.ttf into:\n /.runelite/chat-panel/\nFor more info, right click 'Chat Panel', then click 'Support'.";
-                String[] options = {"Open Location", "OK"};
+                String[] options = {"OK"};
                 fontLoadErrorShown = true;
                 int choice = JOptionPane.showOptionDialog(client.getCanvas(), message, "Empty Font File", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
-                if (choice == 0) {
-                    openDIR();
-                }
             }
             return new Font("Default", fontStyle, fontSize);
         } else {
@@ -972,9 +969,6 @@ public class ChatPanelSidebar extends PluginPanel {
                     String[] options = {"Open Location", "OK"};
                     int choice = JOptionPane.showOptionDialog(client.getCanvas(), message, "Font Loading Error", JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE, null, options, options[0]);
                     fontLoadErrorShown = true;
-                    if (choice == 0) {
-                        openDIR();
-                    }
                 }
                 return new Font("Default", fontStyle, fontSize);
             }
@@ -991,20 +985,6 @@ public class ChatPanelSidebar extends PluginPanel {
             } catch (Exception e) {
                 logger.error("Error creating directory: {}", e.getMessage());
             }
-        }
-    }
-
-    private void openDIR() {
-        if (CHAT_PANEL_DIR.exists()) {
-            try {
-                Desktop desktop = Desktop.getDesktop();
-                desktop.open(CUSTOM_FONT_FILE.getParentFile());
-            } catch (IOException e) {
-                JOptionPane.showMessageDialog(client.getCanvas(), "Error opening file browser \nHere is the error message that was created:\n" + e.getMessage(), "Unknown Error", JOptionPane.ERROR_MESSAGE);
-            }
-        } else {
-            JOptionPane.showMessageDialog(client.getCanvas(), "The Chat Panel directory can't be found in /.runelite/\nThis might be caused by a permission issue.\nYou can try creating the /.runelite/chat-panel/ directory manually.", "Directory Not Found", JOptionPane.ERROR_MESSAGE);
-            fontLoadErrorShown = true;
         }
     }
 
